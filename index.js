@@ -42,105 +42,6 @@ function checkUsers(){
   }
 }
 
-/*
-function convertSeconds(seconds) {
-    const secondsInMinute = 60;
-    const secondsInHour = 60 * secondsInMinute;
-    const secondsInDay = 24 * secondsInHour;
-    const secondsInMonth = 30 * secondsInDay;
-    const secondsInYear = 12 * secondsInMonth;
-
-    let years = Math.floor(seconds / secondsInYear);
-    seconds %= secondsInYear;
-
-    let months = Math.floor(seconds / secondsInMonth);
-    seconds %= secondsInMonth;
-
-    let days = Math.floor(seconds / secondsInDay);
-    seconds %= secondsInDay;
-
-    let hours = Math.floor(seconds / secondsInHour);
-    seconds %= secondsInHour;
-
-    let minutes = Math.floor(seconds / secondsInMinute);
-    seconds %= secondsInMinute;
-
-    return {
-        years,
-        months,
-        days,
-        hours,
-        minutes,
-        seconds
-    };
-}
-
-
-function convertSeconds(seconds) {
-    const secondsInDay = 24 * 60 * 60; // تعداد ثانیه‌ها در یک روز
-    const secondsInWeek = 7 * secondsInDay; // تعداد ثانیه‌ها در یک هفته
-    const secondsInMonth = 30 * secondsInDay; // تعداد ثانیه‌ها در یک ماه (تقریبی)
-    const secondsInYear = 12 * secondsInMonth; // تعداد ثانیه‌ها در یک سال (تقریبی)
-
-    let years = Math.floor(seconds / secondsInYear);
-    seconds %= secondsInYear;
-
-    let months = Math.floor(seconds / secondsInMonth);
-    seconds %= secondsInMonth;
-
-    let weeks = Math.floor(seconds / secondsInWeek);
-    seconds %= secondsInWeek;
-
-    let days = Math.floor(seconds / secondsInDay);
-    seconds %= secondsInDay;
-
-    // نمایش نتایج
-    return {
-        years,
-        months,
-        weeks,
-        days
-    };
-}
-
-
-
-// مثال استفاده:
-//const futureTime = convertSeconds(1000000000); // تعداد ثانیه‌ها را به عنوان ورودی وارد کنید
-//console.log(futureTime); // { years: ..., months: ..., weeks: ..., days: ... }
-
-function convertMilliseconds(milliseconds) {
-    const millisecondsInDay = 24 * 60 * 60 * 1000; // تعداد میلی‌ثانیه‌ها در یک روز
-    const millisecondsInWeek = 7 * millisecondsInDay; // تعداد میلی‌ثانیه‌ها در یک هفته
-    const millisecondsInMonth = 30 * millisecondsInDay; // تعداد میلی‌ثانیه‌ها در یک ماه (تقریبی)
-    const millisecondsInYear = 12 * millisecondsInMonth; // تعداد میلی‌ثانیه‌ها در یک سال (تقریبی)
-
-    let years = Math.floor(milliseconds / millisecondsInYear);
-    milliseconds %= millisecondsInYear;
-
-    let months = Math.floor(milliseconds / millisecondsInMonth);
-    milliseconds %= millisecondsInMonth;
-
-    let weeks = Math.floor(milliseconds / millisecondsInWeek);
-    milliseconds %= millisecondsInWeek;
-
-    let days = Math.floor(milliseconds / millisecondsInDay);
-    milliseconds %= millisecondsInDay;
-
-    // نمایش نتایج
-    return {
-        years,
-        months,
-        weeks,
-        days
-    };
-}
-
-// مثال استفاده:
-//const futureTime = convertMilliseconds(1000000000000); // تعداد میلی‌ثانیه‌ها را به عنوان ورودی وارد کنید
-//console.log(futureTime); // { years: ..., months: ..., weeks: ..., days: ... }
-*/
-
 function convertMilliseconds(milliseconds) {
     const millisecondsInDay = 24 * 60 * 60 * 1000; // تعداد میلی‌ثانیه‌ها در یک روز
     const millisecondsInWeek = 7 * millisecondsInDay; // تعداد میلی‌ثانیه‌ها در یک هفته
@@ -182,10 +83,6 @@ function convertMilliseconds(milliseconds) {
         seconds
     };
 }
-
-// مثال استفاده:
-//const futureTime = convertMilliseconds(1000000000000); // تعداد میلی‌ثانیه‌ها را به عنوان ورودی وارد کنید
-//console.log(futureTime); // { years: ..., months: ..., weeks: ..., days: ..., hours: ..., minutes: ..., seconds: ... }
 
 web.post("/push", (req, res) => {
   const body = req.body;
@@ -258,7 +155,7 @@ bot.on("message", (msg) => {
             users[user.index].port.end -= ints;
           }
 
-          fs.writeFileSync("users.json", JSON.stringify(users));
+          fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
           bot.sendMessage(msg.chat.id, makeFont("changes saved 🎖"), { reply_to_message_id: msg.message_id })
 
         } else { bot.sendMessage(msg.chat.id, makeFont("user has no port 🌐"), { reply_to_message_id: msg.message_id }) }
