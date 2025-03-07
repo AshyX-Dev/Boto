@@ -8,18 +8,23 @@ function createHashPort(){
 
 class JsonCore{
   constructor(){
-    if (!(fs.existsSync("users.json"))){
-      fs.writeFileSync("users.json", "[]");
+
+    if (!(fs.existsSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf")){
+      fs.mkdirSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf");
+    }
+    
+    if (!(fs.existsSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json"))){
+      fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", "[]");
     }
 
-    if (!(fs.existsSync("authes"))){
-      fs.mkdirSync("authes");
+    if (!(fs.existsSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes"))){
+      fs.mkdirSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes");
     }
 
   }
 
   getUsers(){
-    return JSON.parse(fs.readFileSync("users.json").toString());
+    return JSON.parse(fs.readFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json").toString());
   }
 
   isExists(userid){
@@ -75,8 +80,8 @@ class JsonCore{
       }
     )
 
-    fs.writeFileSync(`authes/${userid}.pack`, "[]");
-    fs.writeFileSync("users.json", JSON.stringify(users));
+    fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`, "[]");
+    fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
 
     return { status: "OK" };
 
@@ -110,7 +115,7 @@ class JsonCore{
       hash: hashed_port
     };
 
-    fs.writeFileSync("users.json", JSON.stringify(users));
+    fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
 
     return { status: "OK", port: hashed_port };
 
@@ -126,7 +131,7 @@ class JsonCore{
     users[user.index]["has_port"] = false;
     users[user.index]["port"] = {};
 
-    fs.writeFileSync("users.json", JSON.stringify(users));
+    fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
 
     return { status: "OK" };
 
@@ -138,7 +143,7 @@ class JsonCore{
       return { status: "INVALID_USER_ID" };
     }
 
-    const by = JSON.parse(fs.readFileSync(`authes/${userid}.pack`).toString());
+    const by = JSON.parse(fs.readFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`).toString());
 
     return { status: "OK", length: by.length };
 
@@ -150,15 +155,15 @@ class JsonCore{
       return { status: "INVALID_USER_ID" };
     }
 
-    const authes = JSON.parse(fs.readFileSync(`authes/${userid}.pack`).toString());
+    const authes = JSON.parse(fs.readFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`).toString());
     authes.push(auth);
     
-    fs.writeFileSync(`authes/${userid}.pack`, JSON.stringify(authes));
+    fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`, JSON.stringify(authes));
 
     for (let sub of user.user.subs){
-      const authes = JSON.parse(fs.readFileSync(`authes/${sub}.pack`).toString());
+      const authes = JSON.parse(fs.readFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${sub}.pack`).toString());
       authes.push(auth);
-      fs.writeFileSync(`authes/${sub}.pack`, JSON.stringify(authes));
+      fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${sub}.pack`, JSON.stringify(authes));
     }
 
     return { status: "OK" };
@@ -176,7 +181,7 @@ class JsonCore{
             if (user.user.subs.length != 5){
               user.user.subs.push(sub.user.userid);
               users[user.index] = user.user;
-              fs.writeFileSync(`users.json`, JSON.stringify(users));
+              fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
               return { status: "OK" };
             } else { return { status: "MAX_SUBS" } }
           } else { return { status: "SUB_HAS_NO_PORT" } }
@@ -198,7 +203,7 @@ class JsonCore{
         user.user.subs = subs;
         users[user.index] = user.user;
         console.log(users[user.index])
-        fs.writeFileSync(`users.json`, JSON.stringify(users));
+        fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
         return { status: "OK" }
       } else { return { status: "NO_INCLUDE_FOUND" } }
     } else { return { status: "INVALID_USER" } }
