@@ -279,7 +279,7 @@ bot.on("callback_query", (call) => {
   if (call.from.id == call.message.reply_to_message.from.id && user["status"] == "OK"){
     if (user["user"]["has_port"]){
       try{
-          bot.sendDocument(call.from.id, `authes/${call.from.id}.pack`);
+          bot.sendDocument(call.from.id, `fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${call.from.id}.pack`);
       } catch (e) {
         bot.sendMessage(call.chat.id, makeFont("Please start bot in PV first ! 💬"), { reply_to_message_id: call.message.message_id })
       }
