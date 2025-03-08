@@ -9,7 +9,7 @@ function createHashPort(){
 class JsonCore{
   constructor(){
 
-    if (!(fs.existsSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf")){
+    if (!(fs.existsSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf"))){
       fs.mkdirSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf");
     }
     
