@@ -50,7 +50,7 @@ class Ch3fPooler
     }
 
     public function sendMessageInline(array $fields, $keyboard): array {
-        $fields['reply_keyboard'] = json_encode(
+        $fields['reply_markup'] = json_encode(
             [
                 "inline_keyboard" => $keyboard
             ]
@@ -60,7 +60,8 @@ class Ch3fPooler
         );
     }
 
-    public function sendDocument(array $fields): array {
+    public function sendDocument(array $fields, $file): array {
+        $fields["document"] = new CURLFile(realpath($file));
         return $this->createConnection(
             "sendDocument", $fields
         );
