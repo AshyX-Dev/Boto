@@ -107,6 +107,8 @@ web.post("/push", (req, res) => {
   }
 })
 
+bot.on("polling_error", (err) => { console.log(err); })
+
 bot.on("message", (msg) => {
   msg.text = msg.text.toLowerCase();
   //console.log(msg)
@@ -114,7 +116,7 @@ bot.on("message", (msg) => {
     if (msg.text === "/start"){
       bot.sendMessage(
         msg.chat.id,
-        makeFont("Admin Panel 💬\n\n/port <...userid...> <...mode...> ☎️\n/delport <...userid...>"),
+        makeFont("Admin Panel 💬\n\n/port <...userid...> <...mode...> ☎️\n/delport <...userid...> 📪\n/see <...userid...> 🕹"),
         { reply_to_message_id: msg.message_id }
       )
     } else if (msg.text.startsWith("/port")){
@@ -160,6 +162,38 @@ bot.on("message", (msg) => {
 
         } else { bot.sendMessage(msg.chat.id, makeFont("user has no port 🌐"), { reply_to_message_id: msg.message_id }) }
       } else { bot.sendMessage(msg.chat.id, makeFont("invalid userid 🛑"), { reply_to_message_id: msg.message_id }) }
+    } else if (msg.text.startsWith("/see")){
+      const spls = msg.text.split(" ");
+      const uid = parseInt(spls[1]);
+      const user = jsc.isExists(uid);
+      if (user["status"] === "OK"){
+        let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+        if (user["user"]["has_port"]){
+          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+          message += "\n🪡 Has port: true";
+          console.log(ud)
+          if (ud.years == 0){
+            if (ud.months == 0){
+              if (ud.weeks == 0){
+                if (ud.days == 0){
+                  if (ud.hours == 0){
+                    if (ud.minutes == 0){
+                      message += `\n🔋 Will end in ${ud.seconds} seconds`;
+                    } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
+                  } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
+                } else { message += `\n🔋 Will end in ${ud.days} days`; }
+              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
+            } else { message += `\n🔋 Will end in ${ud.months} months`; }
+          } else { message += `\n🔋 Will end in ${ud.years} years`; }
+
+          message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+          message += `\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`
+          message += `\n🔦 Port: `;
+          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>`, { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) , { reply_to_message_id: msg.message_id, parse_mode: "HTML" }) }
+        } else {
+        bot.sendMessage(msg.chat.id, makeFont("user has not signed up 🥃"), { reply_to_message_id: msg.message_id })
+      }
     }
   }
 
@@ -185,24 +219,7 @@ bot.on("message", (msg) => {
       let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
       if (user["user"]["has_port"]){
         let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
-       // if (ud.year)
         message += "\n🪡 Has port: true";
-        //console.log(ud)
-        //console.log(new Date().getTime())
-        ///
-        /*
-        if (ud.years == 0){
-          if (ud.months == 0){
-            if (ud.weeks == 0){
-              //if (ud.days == 0){
-                //if (ud.hours == 0){
-                    message += `\n🔋 Will end in ${ud.days} days`;
-                  //} else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
-                //} else { message += `\n🔋 Will end in ${ud.hours} hours`; }
-              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
-            } else { message += `\n🔋 Will end in ${ud.months} months`; }
-            } else { message += `\n🔋 Will end in ${ud.years} years`; }
-        */
         console.log(ud)
         if (ud.years == 0){
           if (ud.months == 0){
@@ -223,11 +240,6 @@ bot.on("message", (msg) => {
         message += `\n🔦 Port: `;
         bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }] ] } })
         } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML" }) }
-      /*
-        message += `\n🎞 Port mode: ${user["user"]["port"]["mode"]}`;
-        message += `\n🔦 Port: ${user["user"]["port"]["hash"]} | `
-      */
-        //bot.sendMessage(msg.chat.id, makeFont(message), { reply_to_message_id: msg.message_id, parse_mode: "HTML" })
       } else {
         bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
       }
