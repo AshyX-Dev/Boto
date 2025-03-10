@@ -14,14 +14,12 @@ $markup->addKeyboard(
 
 $data = $bot->getUpdates();
 echo "\n" . var_dump($data) . "\n";
-$sdata = $bot->sendMessage(
+$sdata = $bot->sendMessageInline(
     [
         "chat_id" => $chid,
         "text" => "Hello world",
-        "reply_markup" => [
-            "inline_keyboard" => $markup->keybuttons
-        ]
-    ]
+    ],
+    $markup->keybuttons
 );
 
 echo "\n" . var_dump($sdata) . "\n";

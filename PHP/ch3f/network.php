@@ -49,6 +49,17 @@ class Ch3fPooler
         );
     }
 
+    public function sendMessageInline(array $fields, $keyboard): array {
+        $fields['reply_keyboard'] = json_encode(
+            [
+                "inline_keyboard" => $keyboard
+            ]
+        );
+        return $this->createConnection(
+            "sendMessage", $fields
+        );
+    }
+
     public function sendDocument(array $fields): array {
         return $this->createConnection(
             "sendDocument", $fields
