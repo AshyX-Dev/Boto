@@ -292,7 +292,7 @@ bot.on("message", (msg) => {
     const user = jsc.isExists(msg.from.id);
     if (user.user.has_port){
       const dominant = getPackFileId(user.user.dominant);
-      bot.sendMessage(msg.chat.id, getPackFileId(dominant)+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+      bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
     } else {
       bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id})
     }
