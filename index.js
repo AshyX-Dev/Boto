@@ -289,9 +289,13 @@ bot.on("message", (msg) => {
     } else { text += "Please first send /install then try again 🏔" }
     bot.sendMessage(msg.chat.id, makeFont(text), {reply_to_message_id: msg.message_id})
   } else if (msg.text.startsWith("/apk") && jsc.isExists(msg.chat.id).status == "OK"){
-    const spls = msg.text.split(" ");
-    const dominant = spls[1];
-    bot.sendMessage(msg.chat.id, getPackFileId(dominant)+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+    const user = jsc.isExists(msg.from.id);
+    if (user.user.has_port){
+      const dominant = getPackFileId(user.user.dominant);
+      bot.sendMessage(msg.chat.id, getPackFileId(dominant)+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+    } else {
+      bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id})
+    }
   } else if (msg.text.startsWith("/start") && !admins.includes(msg.from.id)){
     bot.sendMessage(
       msg.chat.id,
