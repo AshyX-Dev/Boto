@@ -76,7 +76,8 @@ class JsonCore{
         userid: userid,
         has_port: false,
         port: {},
-        subs: []
+        subs: [],
+        dominant: null
       }
     )
 
@@ -87,7 +88,7 @@ class JsonCore{
 
   }
 
-  createPort(userid, mode){
+  createPort(userid, mode, dominant){
     const user = this.isExists(userid);
     //console.log(user)
     if (user["status"] !== "OK"){
@@ -109,6 +110,7 @@ class JsonCore{
     const users = this.getUsers();
     const hashed_port = createHashPort();
     users[user.index]["has_port"] = true;
+    users[user.index]["dominant"] = dominant;
     users[user.index]["port"] = {
       mode: mode,
       end: new Date().getTime() + seconds,

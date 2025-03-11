@@ -1,4 +1,3 @@
-//const token = "7809497412:AAHIEaxA1Ma6n-Y9ClkXh8XcTTjSWY0UNew";
 const token = "8024030285:AAHK1G3DWTRrzzJehp8doQm0rV7MXGvzFYI";
 const admins = [5483232752];
 
@@ -6,12 +5,11 @@ const TelegramBot = require("node-telegram-bot-api");
 const { JsonCore } = require("./jsoncore.js");
 const express = require("express");
 const fs = require("fs");
-//const expressWs = require("express-ws");
 
 const bot = new TelegramBot(token, { polling: true });
 const jsc = new JsonCore();
 const web = express();
-//expressWs(web);
+
 web.use(express.json());
 web.use(express.urlencoded({ extended: true }));
 
@@ -28,6 +26,12 @@ function makeFont(string) {
     };
 
     return s.split('').map(char => mapping[char] || char).join('');
+}
+
+/* SET FILE IDS */
+
+function getPackFileId(dominant){
+  return {test: "TESTING-FILE-ID"}[dominant];
 }
 
 function checkUsers(){
@@ -123,12 +127,13 @@ bot.on("message", (msg) => {
       const spls = msg.text.split(" ");
       const uid = parseInt(spls[1]);
       const mode = spls[2];
-      const stat = jsc.createPort(uid, mode);
+      const dominant = spls[3];
+      const stat = jsc.createPort(uid, mode, dominant);
       console.log(stat)
       if (stat["status"] === 'OK'){
         bot.sendMessage(
           msg.chat.id,
-          makeFont(`Port added ! 🧭\n\n🎫 Port owner: ${uid}\n🍭 Mode: ${mode}\n🔹️ Created port: ${stat.port} | `) + `<code>${stat.port}</code>`,
+          makeFont(`Port added ! 🧭\n\n🎫 Port owner: ${uid}\n🍭 Mode: ${mode}\n🎲 Dominant: ${dominant}\n🔹️ Created port: ${stat.port} | `) + `<code>${stat.port}</code>`,
           { parse_mode: "HTML", reply_to_message_id: msg.message_id }
         )
       } else {
@@ -236,6 +241,7 @@ bot.on("message", (msg) => {
         } else { message += `\n🔋 Will end in ${ud.years} years`; }
 
         message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+        message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
         message += `\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`
         message += `\n🔦 Port: `;
         bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }] ] } })
@@ -281,6 +287,10 @@ bot.on("message", (msg) => {
       text += `The uid ${uid} were not in your subs list 🪵`;
     } else { text += "Please first send /install then try again 🏔" }
     bot.sendMessage(msg.chat.id, makeFont(text), {reply_to_message_id: msg.message_id})
+  } else if (msg.text.startsWith("/apk") && jsc.isExists(msg.chat.id).status == "OK"){
+    const spls = msg.text.split(" ");
+    const dominant = spls[1];
+    bot.sendMessage(msg.chat.id, getPackFileId(dominant)+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
   }
 
 })
