@@ -193,10 +193,9 @@ bot.on("message", (msg) => {
 
           message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
           message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
-          message += `\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`
           message += `\n🔦 Port: `;
-          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>`, { reply_to_message_id: msg.message_id, parse_mode: "HTML" })
-          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) , { reply_to_message_id: msg.message_id, parse_mode: "HTML" }) }
+          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }) }
         } else {
         bot.sendMessage(msg.chat.id, makeFont("user has not signed up 🥃"), { reply_to_message_id: msg.message_id })
       }
@@ -213,42 +212,80 @@ bot.on("message", (msg) => {
       { reply_to_message_id: msg.message_id }
     )
     } else {
-      bot.sendMessage(
-        msg.chat.id,
-        makeFont("You already logged in 📶"),
-        { reply_to_message_id: msg.message_id }
-      )
+      if (user.user.language === "eng"){
+        bot.sendMessage(
+          msg.chat.id,
+          makeFont("You already logged in 📶"),
+          { reply_to_message_id: msg.message_id }
+        )
+      } else {
+        bot.sendMessage(
+          msg.chat.id,
+          makeFont("شما از قبل ثبت نام کرده اید 📶"),
+          { reply_to_message_id: msg.message_id }
+        )
+      }
     }
   } else if (msg.text.startsWith("/profile")){
     const user = jsc.isExists(msg.from.id);
     if (user["status"] === "OK"){
-      let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
-      if (user["user"]["has_port"]){
-        let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
-        message += "\n🪡 Has port: true";
-        console.log(ud)
-        if (ud.years == 0){
-          if (ud.months == 0){
-            if (ud.weeks == 0){
-              if (ud.days == 0){
-                if (ud.hours == 0){
-                  if (ud.minutes == 0){
-                    message += `\n🔋 Will end in ${ud.seconds} seconds`;
-                  } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
-                } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
-              } else { message += `\n🔋 Will end in ${ud.days} days`; }
-            } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
-          } else { message += `\n🔋 Will end in ${ud.months} months`; }
-        } else { message += `\n🔋 Will end in ${ud.years} years`; }
+      if (user.user.language === "eng"){
+        let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+        if (user["user"]["has_port"]){
+          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+          message += "\n🪡 Has port: true";
+          console.log(ud)
+          if (ud.years == 0){
+            if (ud.months == 0){
+              if (ud.weeks == 0){
+                if (ud.days == 0){
+                  if (ud.hours == 0){
+                    if (ud.minutes == 0){
+                      message += `\n🔋 Will end in ${ud.seconds} seconds`;
+                    } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
+                  } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
+                } else { message += `\n🔋 Will end in ${ud.days} days`; }
+              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
+            } else { message += `\n🔋 Will end in ${ud.months} months`; }
+          } else { message += `\n🔋 Will end in ${ud.years} years`; }
 
-        message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
-        message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
-        message += `\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`
-        message += `\n🔦 Port: `;
-        bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }] ] } })
-        } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML" }) }
+          message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+          message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
+          message += `\n🔦 Port: `;
+          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }) }
+        } else {
+          let message = `پروفایل پیج🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+        if (user["user"]["has_port"]){
+          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+          message += "\n🪡 دارای پورت: بله";
+          console.log(ud)
+          if (ud.years == 0){
+            if (ud.months == 0){
+              if (ud.weeks == 0){
+                if (ud.days == 0){
+                  if (ud.hours == 0){
+                    if (ud.minutes == 0){
+                      message += `\n🔋 تمام خواهد شد در ${ud.seconds} ثانیه دیگر`;
+                    } else { message += `\n🔋 تمام خواهد شد در ${ud.minutes} دقیقه دیگر`; }
+                  } else { message += `\n🔋 تمام خواهد شد در ${ud.hours} ساعت دیگر`; }
+                } else { message += `\n🔋 تمام خواهد شد در ${ud.days} روز دیگر`; }
+              } else { message += `\n🔋 تمام خواهد شد در ${ud.weeks} هفته دیگر`; }
+            } else { message += `\n🔋 تمام خواهد شد در ${ud.months} ماه دیگر`; }
+          } else { message += `\n🔋 تمام خواهد شد در ${ud.years} سال دیگر`; }
+
+          message += `\n🎞 مود پورت: ${user["user"]["port"]["mode"]}`;
+          message += `\n📪 غالب خریداری شده: ${user["user"]["dominant"]}`;
+          message += `\n🔦 پورت: `;
+          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ ساب ها: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("گرفتن فایل اوت ها 📥"), callback_data: "getSession" }], [{ text: makeFont("بستن"), callback_data: "close" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }] ] } }) }
+        }
       } else {
-        bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
+        if (user.user.language === "en"){
+          bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
+        } else {
+          bot.sendMessage(msg.chat.id, makeFont("لطفا اول با کامند /install ثبت نام کنید 🥃"), { reply_to_message_id: msg.message_id })
+        }
       }
     } else if (msg.text.startsWith("/report")){
       const length = jsc.getAuthesLength(msg.from.id);
@@ -292,16 +329,50 @@ bot.on("message", (msg) => {
     const user = jsc.isExists(msg.from.id);
     if (user.user.has_port){
       const dominant = getPackFileId(user.user.dominant);
-      bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+      if (user.user.language === "eng"){
+        bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+      } else { bot.sendMessage(msg.chat.id, dominant+"\n این پیام در غالب داکیومنت ارسال خواهد شد", { reply_to_message_id: msg.message_id }); }
     } else {
-      bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id})
+      bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id});
     }
   } else if (msg.text.startsWith("/start") && !admins.includes(msg.from.id)){
-    bot.sendMessage(
-      msg.chat.id,
-      makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
-      { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
-    )
+    const user = jsc.isExists(msg.from.id);
+    if (user.status === "OK" && user.user.language === "eng"){
+      bot.sendMessage(
+        msg.chat.id,
+        makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+      )
+    } else if (user.status === "OK" && user.user.language === "fa"){
+      bot.sendMessage(
+        msg.chat.id,
+        makeFont(`کاربر [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) خوش اومدی !\nتوضیحات رو کامل بخون و بعد از ربات استفاده کن 👀\n\n`) + "/start" + " - استارت کردن ربات\n" + "/install" + " - ثبت نام کردن در بات\n" + "/apk" + " - دریافت غالب خریداری شده (فقط در پیوی)\n" + "/profile" + " - اطلاعات خود را ببینید\n" + "/report" + " - مقدار اوتی که برای پورت شما از سمت سرور دریافت شده\n" + "/addsub <userid>" + " - اضافه کردن ساب (با این گزینه, اوت هایی که به سمت پورت شما ارسال میشن رو برای دوست و رفیقات هم ذخیره کن)\n" + "/delsub <userid>" + " - حذف ساب\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •",
+        { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+      )
+    } else {
+      bot.sendMessage(
+        msg.chat.id,
+        makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+      )
+    }
+  } else if (msg.text.startsWith("/lang")){
+    const user = jsc.isExists(msg.from.id);
+    if (!user.status === "OK"){
+      bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
+    } else if (user.user.language === "en"){
+      bot.sendMessage(
+        msg.chat.id,
+        makeFont("choose a language 🍷"),
+        { reply_to_message_id: msg.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("english"), callback_data: "eng_lang" }, { text: "فارسی", callback_data: "fa_lang" }] ] } }
+      )
+    } else if (user.user.language === "fa"){
+      bot.sendMessage(
+        msg.chat.id,
+        makeFont("یک زبانو انتخاب کن خوشتیپ 🍷"),
+        { reply_to_message_id: msg.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("english"), callback_data: "eng_lang" }, { text: "فارسی", callback_data: "fa_lang" }] ] } }
+      )
+    }
   }
 
 })
@@ -309,8 +380,10 @@ bot.on("message", (msg) => {
 bot.on("callback_query", (call) => {
   //console.log(call.message.reply_to_message)
   if (call.data === "close"){
-    bot.deleteMessage(call.message.chat.id, call.message.message_id);
-  } else {
+    if (call.from.id === call.message.reply_to_message.from.id){
+      bot.deleteMessage(call.message.chat.id, call.message.message_id);
+    }
+  } else if (call.data === "getSession") {
     const user = jsc.isExists(call.from.id);
     if (call.from.id == call.message.reply_to_message.from.id && user["status"] == "OK"){
       if (user["user"]["has_port"]){
@@ -320,6 +393,16 @@ bot.on("callback_query", (call) => {
           bot.sendMessage(call.chat.id, makeFont("Please start bot in PV first ! 💬"), { reply_to_message_id: call.message.message_id })
         }
       }
+    }
+  } else if (call.data.endsWith("lang")){
+    if (call.from.id === call.message.reply_to_message.from.id){
+      const spls = call.data.split("_");
+      const lang = spls[0];
+      jsc.changeLanguage(call.from.id, lang);
+      bot.editMessageText(
+        makeFont(`language changed into ${lang}`),
+        { message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+      )
     }
   }
 })

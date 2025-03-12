@@ -75,13 +75,29 @@ class JsonCore{
       {
         userid: userid,
         has_port: false,
+        dominant: null,
+        language: "en",
         port: {},
-        subs: [],
-        dominant: null
+        subs: []
       }
     )
 
     fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`, "[]");
+    fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+
+    return { status: "OK" };
+
+  }
+
+  changeLanguage(userid, lang){
+    const user = this.isExists(userid);
+    if (user["status"] !== "OK"){
+      return { status: "INVALID_USER_ID" };
+    }
+
+    const users = this.getUsers();
+    users[user.index]["language"] = lang;
+
     fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
 
     return { status: "OK" };
