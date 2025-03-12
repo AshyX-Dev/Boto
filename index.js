@@ -281,7 +281,7 @@ bot.on("message", (msg) => {
           } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }] ] } }) }
         }
       } else {
-        if (user.user.language === "en"){
+        if (user.user.language === "eng"){
           bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
         } else {
           bot.sendMessage(msg.chat.id, makeFont("لطفا اول با کامند /install ثبت نام کنید 🥃"), { reply_to_message_id: msg.message_id })
@@ -360,7 +360,7 @@ bot.on("message", (msg) => {
     const user = jsc.isExists(msg.from.id);
     if (!user.status === "OK"){
       bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
-    } else if (user.user.language === "en"){
+    } else if (user.user.language === "eng"){
       bot.sendMessage(
         msg.chat.id,
         makeFont("choose a language 🍷"),
@@ -401,7 +401,7 @@ bot.on("callback_query", (call) => {
       jsc.changeLanguage(call.from.id, lang);
       bot.editMessageText(
         makeFont(`language changed into ${lang}`),
-        { message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
+        { message_id: call.message.message_id, chat_id: call.message.chat.id, reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
   }
