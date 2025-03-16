@@ -150,7 +150,7 @@ bot.on("message", (msg) => {
         bot.sendMessage(
           uid,
           makeFont(`Port added ! 🧭\n\n🎫 Port owner: ${uid}\n🍭 Mode: ${mode}\n🎲 Dominant: ${dominant}\n🔹️ Created port: ${stat.port} | `) + `<code>${stat.port}</code>`,
-          { parse_mode: "HTML", reply_to_message_id: msg.message_id }
+          { parse_mode: "HTML" }
         );
       } else {
         bot.sendMessage(
@@ -216,7 +216,7 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/profile")){
       const user = jsc.isExists(msg.from.id);
       if (user.status === "OK"){
-        if (jsc.hasPort(msg.from.id)){
+        if (jsc.hasPort(msg.from.id) === true){
           if (user.user.port.carry.length > 5){
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.sendMessage(
@@ -313,7 +313,7 @@ bot.on("message", (msg) => {
         } else {
           bot.sendMessage(
             msg.chat.id,
-            makeFont("please buy port first then try again 👾") ? user.user.language === "eng" : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
+            user.user.language === "eng" ? makeFont("please buy port first then try again 👾") : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
             {
               reply_to_message_id: msg.message_id,
               reply_markup: {
@@ -373,17 +373,17 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/apk") && jsc.isExists(msg.chat.id).status == "OK"){
     const user = jsc.isExists(msg.from.id);
     if (user.user.has_port){
-      const prt = msg.text.split(" ")[1];
+      const prt = msg.text.split(" ")[1].toUpperCase();
       if (user.user.port.carry.includes(prt)){
         const dominant = getPackFileId(user.user.port[prt].dominant);
         if (user.user.language === "eng"){
           bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
         } else { bot.sendMessage(msg.chat.id, dominant+"\n این پیام در غالب داکیومنت ارسال خواهد شد", { reply_to_message_id: msg.message_id }); }
       } else {
-        bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id});
+        bot.sendMessage(msg.chat.id, makeFont("invalid port detected 🍉"), {reply_to_message_id: msg.message_id});
       }
     } else {
-      bot.sendMessage(msg.chat.id, makeFont("invalid port detected 👀"), { reply_to_message_id: msg.message_id })
+      bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), { reply_to_message_id: msg.message_id })
     }
   } else if (msg.text.startsWith("/start") && !admins.includes(msg.from.id)){
     const user = jsc.isExists(msg.from.id);
