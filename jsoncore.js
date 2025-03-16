@@ -207,7 +207,7 @@ class JsonCore{
 
   }
 
-  addSub(userid, subx){
+  addSub(userid, subx, for_port){
     const user = this.isExists(userid);
     const sub = this.isExists(subx);
     const users = this.getUsers();
@@ -215,34 +215,35 @@ class JsonCore{
       if (sub.status == "OK"){
         if (user.user.has_port){
           if (sub.user.has_port){
-            if (user.user.subs.length != 5){
-              user.user.subs.push(sub.user.userid);
-              users[user.index] = user.user;
-              fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
-              return { status: "OK" };
-            } else { return { status: "MAX_SUBS" } }
+            if (user.user.port.carry.includes(for_port)){
+              if (user.user.port[for_port].subs.length != 5){
+                user.user.port[for_port].subs.push(sub.user.userid);
+                users[user.index] = user.user;
+                fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
+                return { status: "OK" };
+              } else { return { status: "MAX_SUBS" } }
+            } else { return { status: "INVALID_PORT" } }
           } else { return { status: "SUB_HAS_NO_PORT" } }
         } else { return { status: "USER_HAS_NO_PORT" } }
       } else { return { status: "INVALID_SUB" } }
     } else { return { status: "INVALD_USER" } }
   }
 
-  removeSub(userid, sub){
+  removeSub(userid, sub, from_port){
     const user = this.isExists(userid);
     if (user.status == "OK"){
       const users = this.getUsers();
-      const subs = user.user.subs;
-      if (subs.includes(sub)){
-        const sub_index = subs.indexOf(sub);
-        console.log(subs)
-        subs.splice(sub_index, 1);
-        console.log(subs)
-        user.user.subs = subs;
-        users[user.index] = user.user;
-        console.log(users[user.index])
-        fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
-        return { status: "OK" }
-      } else { return { status: "NO_INCLUDE_FOUND" } }
+      if (user.user.port.carry.includes(port)){
+        if (user.user.port[from_port].subs.includes(sub)){
+          const subs = user.user.port[from_port].subs;
+          const sub_index = subs.indexOf(sub);
+          subs.splice(sub_index, 1);
+          user.user.port[from_port].subs = subs;
+          users[user.index] = user.user;
+          fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json`, JSON.stringify(users));
+          return { status: "OK" }
+        } else { return { status: "NO_INCLUDE_FOUND" } }
+      } else { return { status: "INVALID_PORT" } }
     } else { return { status: "INVALID_USER" } }
   }
 

@@ -8,6 +8,20 @@ const fs = require("fs");
 const bot = new TelegramBot(token, { polling: true });
 const jsc = new JsonCore();
 
+function getGroupsOfFive(array) {
+  const result = [];
+  for (let i = 0; i < array.length; i += 5) {
+      result.push(array.slice(i, i + 5));
+  }
+  return result;
+}
+
+function insertAtIndex(array, index, item) {
+  if (index >= 0 && index <= array.length) {
+      array.splice(index, 0, item);
+  }
+}
+
 function makeFont(string) {
     const s = string;
     const mapping = {
@@ -122,9 +136,10 @@ bot.on("message", (msg) => {
     } else if (msg.text.startsWith("/port")){
       const spls = msg.text.split(" ");
       const uid = parseInt(spls[1]);
-      const mode = spls[2];
-      const dominant = spls[3];
-      const stat = jsc.createPort(uid, mode, dominant);
+      const mode_length = parseInt(spls[2]);
+      const mode = spls[3];
+      const dominant = spls[4];
+      const stat = jsc.createPort(uid, mode, dominant, mode_length);
       console.log(stat)
       if (stat["status"] === 'OK'){
         bot.sendMessage(
@@ -165,7 +180,7 @@ bot.on("message", (msg) => {
 
         } else { bot.sendMessage(msg.chat.id, makeFont("user has no port 🌐"), { reply_to_message_id: msg.message_id }) }
       } else { bot.sendMessage(msg.chat.id, makeFont("invalid userid 🛑"), { reply_to_message_id: msg.message_id }) }
-    } else if (msg.text.startsWith("/see")){
+    } /*else if (msg.text.startsWith("/see")){
       const spls = msg.text.split(" ");
       const uid = parseInt(spls[1]);
       const user = jsc.isExists(uid);
@@ -197,7 +212,7 @@ bot.on("message", (msg) => {
         } else {
         bot.sendMessage(msg.chat.id, makeFont("user has not signed up 🥃"), { reply_to_message_id: msg.message_id })
       }
-    }
+    }*/
   }
 
   if (msg.text.startsWith("/install")){
@@ -224,65 +239,144 @@ bot.on("message", (msg) => {
         )
       }
     }
-  } else if (msg.text.startsWith("/profile")){
-    const user = jsc.isExists(msg.from.id);
+  } //else if (msg.text.startsWith("/profile")){
+    /*const user = jsc.isExists(msg.from.id);
     if (user["status"] === "OK"){
-      if (user.user.language === "eng"){
-        let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
-        if (user["user"]["has_port"]){
-          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
-          message += "\n🪡 Has port: true";
-          console.log(ud)
-          if (ud.years == 0){
-            if (ud.months == 0){
-              if (ud.weeks == 0){
-                if (ud.days == 0){
-                  if (ud.hours == 0){
-                    if (ud.minutes == 0){
-                      message += `\n🔋 Will end in ${ud.seconds} seconds`;
-                    } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
-                  } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
-                } else { message += `\n🔋 Will end in ${ud.days} days`; }
-              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
-            } else { message += `\n🔋 Will end in ${ud.months} months`; }
-          } else { message += `\n🔋 Will end in ${ud.years} years`; }
-
-          message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
-          message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
-          message += `\n🔦 Port: `;
-          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
-          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }) }
-        } else {
-          let message = `پروفایل پیج🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
-        if (user["user"]["has_port"]){
-          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
-          message += "\n🪡 دارای پورت: بله";
-          console.log(ud)
-          if (ud.years == 0){
-            if (ud.months == 0){
-              if (ud.weeks == 0){
-                if (ud.days == 0){
-                  if (ud.hours == 0){
-                    if (ud.minutes == 0){
-                      message += `\n🔋 تمام خواهد شد در ${ud.seconds} ثانیه دیگر`;
-                    } else { message += `\n🔋 تمام خواهد شد در ${ud.minutes} دقیقه دیگر`; }
-                  } else { message += `\n🔋 تمام خواهد شد در ${ud.hours} ساعت دیگر`; }
-                } else { message += `\n🔋 تمام خواهد شد در ${ud.days} روز دیگر`; }
-              } else { message += `\n🔋 تمام خواهد شد در ${ud.weeks} هفته دیگر`; }
-            } else { message += `\n🔋 تمام خواهد شد در ${ud.months} ماه دیگر`; }
-          } else { message += `\n🔋 تمام خواهد شد در ${ud.years} سال دیگر`; }
-
-          message += `\n🎞 مود پورت: ${user["user"]["port"]["mode"]}`;
-          message += `\n📪 غالب خریداری شده: ${user["user"]["dominant"]}`;
-          message += `\n🔦 پورت: `;
-          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ ساب ها: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("گرفتن فایل اوت ها 📥"), callback_data: "getSession" }], [{ text: makeFont("بستن"), callback_data: "close" }] ] } })
-          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }] ] } }) }
-        }
-      } else {
+      if (user.user.port.carry.length === 1){
         if (user.user.language === "eng"){
-          bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
+          let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+          if (user["user"]["has_port"]){
+            let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+            message += "\n🪡 Has port: true";
+            console.log(ud)
+            if (ud.years == 0){
+              if (ud.months == 0){
+                if (ud.weeks == 0){
+                  if (ud.days == 0){
+                    if (ud.hours == 0){
+                      if (ud.minutes == 0){
+                        message += `\n🔋 Will end in ${ud.seconds} seconds`;
+                      } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
+                    } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
+                  } else { message += `\n🔋 Will end in ${ud.days} days`; }
+                } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
+              } else { message += `\n🔋 Will end in ${ud.months} months`; }
+            } else { message += `\n🔋 Will end in ${ud.years} years`; }
+
+            message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+            message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
+            message += `\n🔦 Port: `;
+            bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+            } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }) }
+          } else {
+            let message = `پروفایل پیج🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+          if (user["user"]["has_port"]){
+            let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+            message += "\n🪡 دارای پورت: بله";
+            console.log(ud)
+            if (ud.years == 0){
+              if (ud.months == 0){
+                if (ud.weeks == 0){
+                  if (ud.days == 0){
+                    if (ud.hours == 0){
+                      if (ud.minutes == 0){
+                        message += `\n🔋 تمام خواهد شد در ${ud.seconds} ثانیه دیگر`;
+                      } else { message += `\n🔋 تمام خواهد شد در ${ud.minutes} دقیقه دیگر`; }
+                    } else { message += `\n🔋 تمام خواهد شد در ${ud.hours} ساعت دیگر`; }
+                  } else { message += `\n🔋 تمام خواهد شد در ${ud.days} روز دیگر`; }
+                } else { message += `\n🔋 تمام خواهد شد در ${ud.weeks} هفته دیگر`; }
+              } else { message += `\n🔋 تمام خواهد شد در ${ud.months} ماه دیگر`; }
+            } else { message += `\n🔋 تمام خواهد شد در ${ud.years} سال دیگر`; }
+
+            message += `\n🎞 مود پورت: ${user["user"]["port"]["mode"]}`;
+            message += `\n📪 غالب خریداری شده: ${user["user"]["dominant"]}`;
+            message += `\n🔦 پورت: `;
+            bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ ساب ها: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •"), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("گرفتن فایل اوت ها 📥"), callback_data: "getSession" }], [{ text: makeFont("بستن"), callback_data: "close" }] ] } })
+            } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }] ] } }) }
+          }
         } else {
-          bot.sendMessage(msg.chat.id, makeFont("لطفا اول با کامند /install ثبت نام کنید 🥃"), { reply_to_message_id: msg.message_id })
+          if (user.user.language === "eng"){
+            bot.sendMessage(msg.chat.id, makeFont("sign up with /install first 🥃"), { reply_to_message_id: msg.message_id })
+          } else {
+            bot.sendMessage(msg.chat.id, makeFont("لطفا اول با کامند /install ثبت نام کنید 🥃"), { reply_to_message_id: msg.message_id })
+          }
+        }
+      }
+        */
+    //}
+
+    else if (msg.text.startsWith("/profile")){
+      const user = jsc.isExists(msg.from.id);
+      if (user.status === "OK"){
+        if (jsc.hasPort(msg.from.id)){
+          if (user.user.port.carry.length > 5){
+            const ports = getGroupsOfFive(user.user.port.carry)[0];
+            bot.sendMessage(
+              msg.chat.id,
+              makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+              {
+                reply_to_message_id: msg.message_id,
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: ports[0],
+                        callback_data: `port_${ports[0]}`
+                      },
+                      {
+                        text: ports[1],
+                        callback_data: `port_${ports[1]}`
+                      }
+                    ],
+                    [
+                      {
+                        text: ports[2],
+                        callback_data: `port_${ports[2]}`
+                      },
+                      {
+                        text: ports[3],
+                        callback_data: `port_${ports[3]}`
+                      },
+                      {
+                        text: ports[4],
+                        callback_data: `port_${ports[4]}`
+                      }
+                    ],
+                    [
+                      {
+                        text: makeFont("next page ⏭"),
+                        callback_data: "page_1"
+                      }
+                    ],
+                    [
+                      {
+                        text: makeFont("close"),
+                        callback_data: "close"
+                      }
+                    ]
+                  ]
+                }
+              }
+            )
+          }
+        } else {
+          bot.sendMessage(
+            msg.chat.id,
+            makeFont("please buy port first then try again 👾") ? user.user.language === "eng" : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
+            {
+              reply_to_message_id: msg.message_id,
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: makeFont("close"),
+                      callback_data: "close"
+                    }
+                  ]
+                ]
+              }
+            }
+          )
         }
       }
     } else if (msg.text.startsWith("/report")){
@@ -295,7 +389,8 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/addsub")){
     const spls = msg.text.split(" ");
     const uid = parseInt(spls[1]);
-    const s = jsc.addSub(msg.from.id, uid);
+    const fp = spls[2];
+    const s = jsc.addSub(msg.from.id, uid, fp);
     let text = "";
     if (s.status == "OK"){
       text += "User added to your Subscribers 🦫\nYour authes will be send for him/her ... 🗯";
@@ -314,7 +409,8 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/delsub")){
     const spls = msg.text.split(" ");
     const uid = parseInt(spls[1]);
-    const s = jsc.removeSub(msg.from.id, uid);
+    const fp = spls[2];
+    const s = jsc.removeSub(msg.from.id, uid, fp);
     console.log(s)
     let text = "";
     if (s.status == "OK"){
@@ -402,9 +498,9 @@ bot.on("callback_query", (call) => {
         { message_id: call.message.message_id, chat_id: call.message.chat.id, reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
-  } else if (call.data === "seeDoc"){
+  } else if (call.data === "seeDocs"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
-      bot.editMessageText(makeFont(`Here these commands 🎃\n\n__Adding port for a user__🍾\n**/port <USERID> <MODE LENGTH> <MODE> <DOMINANT>** => /port 5434674 3 week po*rn\n\n__See the users profile__👁\n**/see <USERID>** => /see 5434674\n\n__Delete the port__🤗\n**/delport <USERID>** => /delport 5434674`), { chat_id: call.message.chat.id, message_id: call.message.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+      bot.editMessageText(makeFont(`Here these commands 🎃\n\nAdding port for a user🍾\n/port <USERID> <MODE LENGTH> <MODE> <DOMINANT> => /port 5434674 3 week po*rn\n\nSee the users profile👁\n/see <USERID> => /see 5434674\n\nDelete the port🤗\n/delport <USERID> => /delport 5434674`), { chat_id: call.message.chat.id, message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
     }
   } else if (call.data === "adminStarterPage"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
@@ -412,7 +508,6 @@ bot.on("callback_query", (call) => {
       {
         chat_id: call.message.chat.id,
         message_id: call.message.message_id,
-        reply_to_message_id: msg.message_id,
         reply_markup: {
           inline_keyboard: [
             [
@@ -444,6 +539,204 @@ bot.on("callback_query", (call) => {
         { chat_id: call.message.chat.id, message_id: call.message.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
+  } else if(call.data.startsWith("page_")){
+    if (call.from.id == call.message.reply_to_message.from.id){
+      const user = jsc.isExists(call.from.id);
+      const pageind = parseInt(call.data.split("_")[1]);
+      const allports = getGroupsOfFive(user.user.port.carry);
+      if (allports.length >= pageind + 1){
+        const ports = allports[pageind];
+        const lists = [];
+        let numb = 0;
+        for (let port of ports) {
+          if (!lists[numb]) {
+              lists[numb] = [];
+          }
+  
+          if (lists[numb].length === 2) {
+              numb += 1;
+              lists[numb] = [];
+          }
+          
+          lists[numb].push({
+              text: port,
+              callback: `port_${port}`
+          });
+        }
+
+        if (!lists[lists.length - 1]) {
+          lists[lists.length - 1] = [];
+        }
+
+        if (allports.length > pageind + 1) {
+          lists[lists.length - 1].push({
+              text: makeFont("⏭ next"),
+              callback: `page_${pageind + 1}`
+          });
+        }
+
+        if (pageind > 0) {
+          lists[lists.length - 1].push({
+              text: makeFont("⏮ previous"),
+              callback: `page_${pageind - 1}`
+          });
+        }
+
+        bot.editMessageText(
+          makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+          {
+            message_id: call.message.message_id,
+            chat_id: call.message.chat.id,
+            reply_markup: {
+              inline_keyboard: lists
+            }
+          }
+        )
+      }
+      // else {
+      //   bot.editMessageText(
+      //     makeFont("")
+      //   )
+      // }
+    }
+  } else if (call.data.startsWith("port_")){
+    if (call.from.id == call.message.reply_to_message.from.id){
+      const user = jsc.isExists(call.from.id);
+      const prt = call.data.split("_")[1];
+      if (user["status"] === "OK"){
+      if (user.user.language === "eng"){
+        let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+        if (jsc.hasPort(call.from.id)){
+          let ud = convertMilliseconds(user["user"]["port"][prt]["end"] - new Date().getTime());
+          message += "\n🪡 Has port: true";
+          console.log(ud)
+          if (ud.years == 0){
+            if (ud.months == 0){
+              if (ud.weeks == 0){
+                if (ud.days == 0){
+                  if (ud.hours == 0){
+                    if (ud.minutes == 0){
+                      message += `\n🔋 Will end in ${ud.seconds} seconds`;
+                    } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
+                  } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
+                } else { message += `\n🔋 Will end in ${ud.days} days`; }
+              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
+            } else { message += `\n🔋 Will end in ${ud.months} months`; }
+          } else { message += `\n🔋 Will end in ${ud.years} years`; }
+
+          message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
+          message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
+          message += `\n🔦 Port: `;
+          bot.editMessageText(makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { message_id: call.message.message_id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }], [{ text: makeFont("close"), callback_data: "close" }, { text: makeFont("back"), callback_data: "profilePage" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.editMessageText(makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { message_id: call.message.id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }, { text: makeFont("back"), callback_data: "profilePage" }] ] } }) }
+        } else {
+          let message = `پروفایل پیج🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
+        if (user["user"]["has_port"]){
+          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
+          message += "\n🪡 دارای پورت: بله";
+          console.log(ud)
+          if (ud.years == 0){
+            if (ud.months == 0){
+              if (ud.weeks == 0){
+                if (ud.days == 0){
+                  if (ud.hours == 0){
+                    if (ud.minutes == 0){
+                      message += `\n🔋 تمام خواهد شد در ${ud.seconds} ثانیه دیگر`;
+                    } else { message += `\n🔋 تمام خواهد شد در ${ud.minutes} دقیقه دیگر`; }
+                  } else { message += `\n🔋 تمام خواهد شد در ${ud.hours} ساعت دیگر`; }
+                } else { message += `\n🔋 تمام خواهد شد در ${ud.days} روز دیگر`; }
+              } else { message += `\n🔋 تمام خواهد شد در ${ud.weeks} هفته دیگر`; }
+            } else { message += `\n🔋 تمام خواهد شد در ${ud.months} ماه دیگر`; }
+          } else { message += `\n🔋 تمام خواهد شد در ${ud.years} سال دیگر`; }
+
+          message += `\n🎞 مود پورت: ${user["user"]["port"]["mode"]}`;
+          message += `\n📪 غالب خریداری شده: ${user["user"]["dominant"]}`;
+          message += `\n🔦 پورت: `;
+          bot.editMessageText(makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ ساب ها: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •"), { message_id: call.message.message_id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("گرفتن فایل اوت ها 📥"), callback_data: "getSession" }], [{ text: makeFont("بستن"), callback_data: "close" }, { text: makeFont("برگشت"), callback_data: "profilePage" }] ] } })
+          } else { message += `\n🪡 Has port: false`; bot.editMessageText(makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { message_id: call.message.message_id, chat_id: call.message.chat.id ,parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }, { text: "برگشت", callback_data: "profilePage" }] ] } }) }
+        }
+      } else {
+        if (user.user.language === "eng"){
+          bot.editMessageText(makeFont("sign up with /install first 🥃"), { message_id: call.message.message_id, chat_id: call.message.chat.id })
+        } else {
+          bot.editMessageText(makeFont("لطفا اول با کامند /install ثبت نام کنید 🥃"), { message_id: call.message.message_id, chat_id: call.message.chat.id })
+        }
+      }
+    }
+  } else if (call.data === "profilePage"){
+    const user = jsc.isExists(msg.from.id);
+      if (user.status === "OK"){
+        if (jsc.hasPort(msg.from.id)){
+          if (user.user.port.carry.length > 5){ // WRITE IF NOT HAVE MORE THAN 5 AUTHES
+            const ports = getGroupsOfFive(user.user.port.carry)[0];
+            bot.editMessageText(
+              makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+              {
+                message_id: call.message.message_id,
+                chat_id: call.message.chat.id,
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: ports[0],
+                        callback_data: `port_${ports[0]}`
+                      },
+                      {
+                        text: ports[1],
+                        callback_data: `port_${ports[1]}`
+                      }
+                    ],
+                    [
+                      {
+                        text: ports[2],
+                        callback_data: `port_${ports[2]}`
+                      },
+                      {
+                        text: ports[3],
+                        callback_data: `port_${ports[3]}`
+                      },
+                      {
+                        text: ports[4],
+                        callback_data: `port_${ports[4]}`
+                      }
+                    ],
+                    [
+                      {
+                        text: makeFont("next page ⏭"),
+                        callback_data: "page_1"
+                      }
+                    ],
+                    [
+                      {
+                        text: makeFont("close"),
+                        callback_data: "close"
+                      }
+                    ]
+                  ]
+                }
+              }
+            )
+          }
+        } else {
+          bot.editMessageText(
+            makeFont("please buy port first then try again 👾") ? user.user.language === "eng" : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
+            {
+              message_id: call.message.message_id,
+              chat_id: call.message.chat.id,
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: makeFont("close"),
+                      callback_data: "close"
+                    }
+                  ]
+                ]
+              }
+            }
+          )
+        }
+      }
   }
 })
 
