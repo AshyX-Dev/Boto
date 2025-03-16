@@ -16,12 +16,6 @@ function getGroupsOfFive(array) {
   return result;
 }
 
-function insertAtIndex(array, index, item) {
-  if (index >= 0 && index <= array.length) {
-      array.splice(index, 0, item);
-  }
-}
-
 function makeFont(string) {
     const s = string;
     const mapping = {
@@ -49,9 +43,11 @@ function checkUsers(){
   const now = new Date().getTime();
   const users = jsc.getUsers();
   for (let user of users){
-    if (user["has_port"]){
-      if (user["port"]["end"] < now){
-        jsc.removePort(user["userid"]);
+    if (user.port.carry.length > 0){
+      for (let port of user.port.carry){
+        if (user.port[port].end <= now){
+          jsc.removePort(user.userid, port);
+        }
       }
     }
   }
@@ -740,4 +736,4 @@ bot.on("callback_query", (call) => {
   }
 })
 
-//setInterval(() => {checkUsers()}, 60000);
+setInterval(() => {checkUsers()}, 20000);
