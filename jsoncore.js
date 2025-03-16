@@ -135,13 +135,13 @@ class JsonCore{
     const users = this.getUsers();
     const hashed_port = createHashPort();
     users[user.index]["has_port"] = true;
-    users[user.index]["port"]["dominant"] = dominant;
     users[user.index]["port"]["carry"].push(hashed_port);
     users[user.index]["port"][hashed_port] = {};
     users[user.index]["port"][hashed_port] = {
       mode: mode,
       end: new Date().getTime() + seconds,
-      hash: hashed_port
+      hash: hashed_port,
+      dominant: dominant
     };
 
     fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));

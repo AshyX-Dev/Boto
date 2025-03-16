@@ -313,7 +313,7 @@ bot.on("message", (msg) => {
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.sendMessage(
               msg.chat.id,
-              makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
               {
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
@@ -560,30 +560,36 @@ bot.on("callback_query", (call) => {
           
           lists[numb].push({
               text: port,
-              callback: `port_${port}`
+              callback_data: `port_${port}`
           });
         }
 
-        if (!lists[lists.length - 1]) {
-          lists[lists.length - 1] = [];
-        }
-
-        if (allports.length > pageind + 1) {
-          lists[lists.length - 1].push({
-              text: makeFont("⏭ next"),
-              callback: `page_${pageind + 1}`
-          });
+        if (lists[lists.length - 1] == []){
+          lists.push([]);
         }
 
         if (pageind > 0) {
           lists[lists.length - 1].push({
               text: makeFont("⏮ previous"),
-              callback: `page_${pageind - 1}`
+              callback_data: `page_${pageind - 1}`
           });
         }
 
+        if (allports.length > pageind + 1) {
+          lists[lists.length - 1].push({
+              text: makeFont("⏭ next"),
+              callback_data: `page_${pageind + 1}`
+          });
+        }
+
+        lists.push([])
+        lists[lists.length - 1].push({
+          text: makeFont("close"),
+          callback_data: "close"
+        })
+
         bot.editMessageText(
-          makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+          user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
           {
             message_id: call.message.message_id,
             chat_id: call.message.chat.id,
@@ -625,7 +631,7 @@ bot.on("callback_query", (call) => {
           } else { message += `\n🔋 Will end in ${ud.years} years`; }
 
           message += `\n🎞  Port mode: ${user["user"]["port"][prt]["mode"]}`;
-          message += `\n📪 Dominant ( APK ): ${user["user"][prt]["dominant"]}`;
+          message += `\n📪 Dominant ( APK ): ${user["user"]["port"][prt]["dominant"]}`;
           message += `\n🔦 Port: `;
           bot.editMessageText(makeFont(message) + `<code>${user["user"]["port"][prt]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 Note: make sure you started bot in pv •"), { message_id: call.message.message_id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("get session 📥"), callback_data: "getSession" }], [{ text: makeFont("close"), callback_data: "close" }, { text: makeFont("back"), callback_data: "profilePage" }] ] } })
           } else { message += `\n🪡 Has port: false`; bot.editMessageText(makeFont(message) + makeFont("\n\n📌 Note: make sure you started bot in pv •") , { message_id: call.message.id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }, { text: makeFont("back"), callback_data: "profilePage" }] ] } }) }
@@ -650,7 +656,7 @@ bot.on("callback_query", (call) => {
           } else { message += `\n🔋 تمام خواهد شد در ${ud.years} سال دیگر`; }
 
           message += `\n🎞 مود پورت: ${user["user"]["port"][prt]["mode"]}`;
-          message += `\n📪 غالب خریداری شده: ${user["user"][prt]["dominant"]}`;
+          message += `\n📪 غالب خریداری شده: ${user["user"]["port"][prt]["dominant"]}`;
           message += `\n🔦 پورت: `;
           bot.editMessageText(makeFont(message) + `<code>${user["user"]["port"][prt]["hash"]}</code>` + makeFont(`\n👥️ ساب ها: ${JSON.stringify(user.user.subs, null, 2)}`) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •"), { message_id: call.message.message_id, chat_id: call.message.chat.id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("گرفتن فایل اوت ها 📥"), callback_data: "getSession" }], [{ text: makeFont("بستن"), callback_data: "close" }, { text: makeFont("برگشت"), callback_data: "profilePage" }] ] } })
           } else { message += `\n🪡 Has port: false`; bot.editMessageText(makeFont(message) + makeFont("\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •") , { message_id: call.message.message_id, chat_id: call.message.chat.id ,parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: "بستن", callback_data: "close" }, { text: "برگشت", callback_data: "profilePage" }] ] } }) }
@@ -670,7 +676,7 @@ bot.on("callback_query", (call) => {
           if (user.user.port.carry.length > 5){ // WRITE IF NOT HAVE MORE THAN 5 AUTHES
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.editMessageText(
-              makeFont("Select a port Which you want ...") ? user.user.language === "eng" : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
               {
                 message_id: call.message.message_id,
                 chat_id: call.message.chat.id,
@@ -719,7 +725,7 @@ bot.on("callback_query", (call) => {
           }
         } else {
           bot.editMessageText(
-            makeFont("please buy port first then try again 👾") ? user.user.language === "eng" : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
+            user.user.language === "eng" ? makeFont("please buy port first then try again 👾") : "لطفا اول پورت خریداری کنید و بعد دوباره تلاش کنید 👾",
             {
               message_id: call.message.message_id,
               chat_id: call.message.chat.id,
