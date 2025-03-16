@@ -266,7 +266,7 @@ bot.on("message", (msg) => {
                 }
               }
             )
-          } else {
+          } else if (user.user.port.carry.length > 0) {
             const ports = user.user.port.carry;
             const lists = [];
             let numb = 0;
