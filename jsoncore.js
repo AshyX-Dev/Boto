@@ -48,7 +48,7 @@ class JsonCore{
     const users = this.getUsers();
     let index = 0;
     for (let user of users){
-      if (user["port"]["hash"] == port){
+      if (user.port.carry.includes(port)){
         return { status: "OK", index: index, user: user };
       }
 
@@ -76,8 +76,8 @@ class JsonCore{
         userid: userid,
         has_port: false,
         dominant: null,
-        language: "en",
-        port: {},
+        language: "eng",
+        port: { carry: [] },
         subs: []
       }
     )
@@ -104,7 +104,16 @@ class JsonCore{
 
   }
 
-  createPort(userid, mode, dominant){
+  hasPort(userid){
+    const user = this.isExists(userid);
+    if (user["status"] !== "OK"){
+      return { status: "INVALID_USER_ID" };
+    }
+    if (user.user.port.carry.length === 0) return false;
+    else return true;
+  }
+
+  createPort(userid, mode, dominant, mode_length = 1){
     const user = this.isExists(userid);
     //console.log(user)
     if (user["status"] !== "OK"){
@@ -114,20 +123,22 @@ class JsonCore{
     let seconds = 0;
 
     if (mode === "day"){
-      seconds = 88400000;
+      seconds = 88400000 * mode_length;
     } else if (mode === "week"){
-      seconds = 604800000;
+      seconds = 604800000 * mode_length;
     } else if (mode === "month"){
-      seconds = 2600000000;
+      seconds = 2600000000 * mode_length;
     } else if (mode === "year"){
-      seconds = 31600000000;
+      seconds = 31600000000 * mode_length;
     }
 
     const users = this.getUsers();
     const hashed_port = createHashPort();
     users[user.index]["has_port"] = true;
     users[user.index]["dominant"] = dominant;
-    users[user.index]["port"] = {
+    users[user.index]["port"]["carry"].push(hashed_port);
+    users[user.index]["port"][hashed_port] = {};
+    users[user.index]["port"][hashed_port] = {
       mode: mode,
       end: new Date().getTime() + seconds,
       hash: hashed_port
@@ -139,19 +150,27 @@ class JsonCore{
 
   }
 
-  removePort(userid){
+  removePort(userid, hashed_port){
     const user = this.isExists(userid);
     if (!(user["status"] === "OK")){
       return { status: "INVALID_USER_ID" };
     }
 
-    const users = this.getUsers();
-    users[user.index]["has_port"] = false;
-    users[user.index]["port"] = {};
+    if (user.user.port.carry.includes(hashed_port)){
 
-    fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+      delete user.user.port.carry[hashed_port];
+      delete user.user.port[hashed_port];
+      const users = this.getUsers();
+      if (user.user.port.carry.length === 0){
+        users[user.index]["has_port"] = false;
+      }
 
-    return { status: "OK" };
+      fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+
+      return { status: "OK" };
+    } else {
+      return { status: "INVALID_PORT" };
+    }
 
   }
 
@@ -225,6 +244,22 @@ class JsonCore{
         return { status: "OK" }
       } else { return { status: "NO_INCLUDE_FOUND" } }
     } else { return { status: "INVALID_USER" } }
+  }
+
+  getPort(userid, port){
+    const user = this.isExists(userid);
+    if (!(user["status"] === "OK")){
+      return { status: "INVALID_USER_ID" };
+    }
+
+    for (let portx of user.user.port.carry){
+      if (portx === port){
+        return { status: "OK", port: user.user.port[port] };
+      }
+    }
+
+    return { status: "INVALID_PORT" };
+
   }
 
 }

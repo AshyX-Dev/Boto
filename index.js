@@ -1,17 +1,12 @@
-const token = "7204484658:AAECe0DHiD_c9Km19qQ61TWWeE5tP7odeH4";
+const token = "6721155767:AAGBrZ_0zC4cgf3C4_nQJks4lFoKtsFEob0";
 const admins = [5483232752, 5047714806];
 
 const TelegramBot = require("node-telegram-bot-api");
 const { JsonCore } = require("./jsoncore.js");
-const express = require("express");
 const fs = require("fs");
 
 const bot = new TelegramBot(token, { polling: true });
 const jsc = new JsonCore();
-const web = express();
-
-web.use(express.json());
-web.use(express.urlencoded({ extended: true }));
 
 function makeFont(string) {
     const s = string;
@@ -33,6 +28,8 @@ function makeFont(string) {
 function getPackFileId(dominant){
   return {test: "TESTING-FILE-ID"}[dominant];
 }
+
+// REWRITE IT
 
 function checkUsers(){
   const now = new Date().getTime();
@@ -88,29 +85,6 @@ function convertMilliseconds(milliseconds) {
     };
 }
 
-web.post("/push", (req, res) => {
-  const body = req.body;
-  if (!(Object.keys(body).includes("from_port"))){
-    res.json(
-      {
-        status: "INVALID_INPUT"
-      }
-    );
-  } else {
-    const us = jsc.getUserByPort(body.from_port);
-    if (us["status"] !== "OK"){
-      res.json({status: us["status"]});
-      return;
-    } else if (us["user"]["has_port"] !== true){
-      res.json({status: "NEED_VERIFY"});
-      return;
-    }
-    res.json(
-      jsc.addAuth(us.user.userid, { auth: body.auth, key: body.key })
-    );
-  }
-})
-
 bot.on("polling_error", (err) => { console.log(err); })
 
 bot.on("message", (msg) => {
@@ -120,8 +94,30 @@ bot.on("message", (msg) => {
     if (msg.text.startsWith("/start")){
       bot.sendMessage(
         msg.chat.id,
-        makeFont("Admin Panel 💬\n\n/port <...userid...> <...mode...> ☎️\n/delport <...userid...> 📪\n/see <...userid...> 🕹"),
-        { reply_to_message_id: msg.message_id }
+        makeFont("welcome to admin`s panel 🌿"),
+        {
+          reply_to_message_id: msg.message_id,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: makeFont("see docs"),
+                  callback_data: "seeDocs"
+                },
+                {
+                  text: makeFont("get users length"),
+                  callback_data: "getUsersLength"
+                }
+              ],
+              [
+                {
+                  text: makeFont("close"),
+                  callback_data: "close"
+                }
+              ]
+            ]
+          }
+        }
       )
     } else if (msg.text.startsWith("/port")){
       const spls = msg.text.split(" ");
@@ -144,8 +140,10 @@ bot.on("message", (msg) => {
         )
       }
     } else if (msg.text.startsWith("/delport")){
-      const uid = parseInt(msg.text.split(" ")[1]);
-      jsc.removePort(uid);
+      const spl = msg.text.split(" ");
+      const uid = parseInt(spl[1]);
+      const port = spl[2];
+      jsc.removePort(uid, port);
       bot.sendMessage(msg.chat.id, makeFont("Port was deleted 🤚🏻🗿"), { reply_to_message_id: msg.message_id })
     } else if (msg.text.startsWith("/edit")){
       const spls = msg.text.split(" ");
@@ -404,8 +402,49 @@ bot.on("callback_query", (call) => {
         { message_id: call.message.message_id, chat_id: call.message.chat.id, reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
+  } else if (call.data === "seeDoc"){
+    if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
+      bot.editMessageText(makeFont(`Here these commands 🎃\n\n__Adding port for a user__🍾\n**/port <USERID> <MODE LENGTH> <MODE> <DOMINANT>** => /port 5434674 3 week po*rn\n\n__See the users profile__👁\n**/see <USERID>** => /see 5434674\n\n__Delete the port__🤗\n**/delport <USERID>** => /delport 5434674`), { chat_id: call.message.chat.id, message_id: call.message.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+    }
+  } else if (call.data === "adminStarterPage"){
+    if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
+      bot.editMessageText(makeFont("welcome to admin`s panel 🌿"),
+      {
+        chat_id: call.message.chat.id,
+        message_id: call.message.message_id,
+        reply_to_message_id: msg.message_id,
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: makeFont("see docs"),
+                callback_data: "seeDocs"
+              },
+              {
+                text: makeFont("get users length"),
+                callback_data: "getUsersLength"
+              }
+            ],
+            [
+              {
+                text: makeFont("close"),
+                callback_data: "close"
+              }
+            ]
+          ]
+        }
+      })
+    }
+  } else if (call.data == "getUsersLength"){
+    if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
+      const all = JSON.parse(fs.readFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json"));
+      const allL = all.length;
+      bot.editMessageText(
+        makeFont(`all users are ${allL} 🌚`),
+        { chat_id: call.message.chat.id, message_id: call.message.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } }
+      )
+    }
   }
 })
 
-setInterval(() => {checkUsers()}, 60000);
-web.listen(8080, "0.0.0.0", () => { console.log("connected"); })
+//setInterval(() => {checkUsers()}, 60000);
