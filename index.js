@@ -146,7 +146,12 @@ bot.on("message", (msg) => {
           msg.chat.id,
           makeFont(`Port added ! 🧭\n\n🎫 Port owner: ${uid}\n🍭 Mode: ${mode}\n🎲 Dominant: ${dominant}\n🔹️ Created port: ${stat.port} | `) + `<code>${stat.port}</code>`,
           { parse_mode: "HTML", reply_to_message_id: msg.message_id }
-        )
+        );
+        bot.sendMessage(
+          uid,
+          makeFont(`Port added ! 🧭\n\n🎫 Port owner: ${uid}\n🍭 Mode: ${mode}\n🎲 Dominant: ${dominant}\n🔹️ Created port: ${stat.port} | `) + `<code>${stat.port}</code>`,
+          { parse_mode: "HTML", reply_to_message_id: msg.message_id }
+        );
       } else {
         bot.sendMessage(
           msg.chat.id,
@@ -165,54 +170,23 @@ bot.on("message", (msg) => {
       const uid = parseInt(spls[1]);
       const ints = parseInt(spls[2]);
       const mode = spls[3];
+      const prt = spls[4]
       const user = jsc.isExists(uid);
       const users = jsc.getUsers();
       if (user["status"] == "OK"){
         if (user.user.has_port){
-          if (mode == "+"){
-            users[user.index].port.end += ints;
-          } else if (mode == "-"){
-            users[user.index].port.end -= ints;
-          }
-
-          fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
-          bot.sendMessage(msg.chat.id, makeFont("changes saved 🎖"), { reply_to_message_id: msg.message_id })
-
+          if (users[user.index].port.carry.includes(prt)){
+            if (mode == "+"){
+              users[user.index].port[prt].end += ints;
+            } else if (mode == "-"){
+              users[user.index].port[prt].end -= ints;
+            }
+            fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+            bot.sendMessage(msg.chat.id, makeFont("changes saved 🎖"), { reply_to_message_id: msg.message_id })
+          } else {  bot.sendMessage(msg.chat.id, makeFont("port not found 🍉"), { reply_to_message_id: msg.message_id })}
         } else { bot.sendMessage(msg.chat.id, makeFont("user has no port 🌐"), { reply_to_message_id: msg.message_id }) }
       } else { bot.sendMessage(msg.chat.id, makeFont("invalid userid 🛑"), { reply_to_message_id: msg.message_id }) }
-    } /*else if (msg.text.startsWith("/see")){
-      const spls = msg.text.split(" ");
-      const uid = parseInt(spls[1]);
-      const user = jsc.isExists(uid);
-      if (user["status"] === "OK"){
-        let message = `Profile Page🧩🔮\n\n🎟 Uid: ${user["user"]["userid"]}`;
-        if (user["user"]["has_port"]){
-          let ud = convertMilliseconds(user["user"]["port"]["end"] - new Date().getTime());
-          message += "\n🪡 Has port: true";
-          console.log(ud)
-          if (ud.years == 0){
-            if (ud.months == 0){
-              if (ud.weeks == 0){
-                if (ud.days == 0){
-                  if (ud.hours == 0){
-                    if (ud.minutes == 0){
-                      message += `\n🔋 Will end in ${ud.seconds} seconds`;
-                    } else { message += `\n🔋 Will end in ${ud.minutes} minutes`; }
-                  } else { message += `\n🔋 Will end in ${ud.hours} hours`; }
-                } else { message += `\n🔋 Will end in ${ud.days} days`; }
-              } else { message += `\n🔋 Will end in ${ud.weeks} weeks`; }
-            } else { message += `\n🔋 Will end in ${ud.months} months`; }
-          } else { message += `\n🔋 Will end in ${ud.years} years`; }
-
-          message += `\n🎞  Port mode: ${user["user"]["port"]["mode"]}`;
-          message += `\n📪 Dominant ( APK ): ${user["user"]["dominant"]}`;
-          message += `\n🔦 Port: `;
-          bot.sendMessage(msg.chat.id, makeFont(message) + `<code>${user["user"]["port"]["hash"]}</code>` + makeFont(`\n👥️ Subscribers: ${JSON.stringify(user.user.subs, null, 2)}`), { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } })
-          } else { message += `\n🪡 Has port: false`; bot.sendMessage(msg.chat.id, makeFont(message) , { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }) }
-        } else {
-        bot.sendMessage(msg.chat.id, makeFont("user has not signed up 🥃"), { reply_to_message_id: msg.message_id })
-      }
-    }*/
+    }
   }
 
   if (msg.text.startsWith("/install")){
@@ -325,11 +299,11 @@ bot.on("message", (msg) => {
               })
             }
 
-            bot.editMessageText(
+            bot.sendMessage(
+              msg.chat.id,
               user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
               {
-                message_id: call.message.message_id,
-                chat_id: call.message.chat.id,
+                reply_to_message_id: msg.message_id,
                 reply_markup: {
                   inline_keyboard: lists
                 }
@@ -399,12 +373,17 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/apk") && jsc.isExists(msg.chat.id).status == "OK"){
     const user = jsc.isExists(msg.from.id);
     if (user.user.has_port){
-      const dominant = getPackFileId(user.user.dominant);
-      if (user.user.language === "eng"){
-        bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
-      } else { bot.sendMessage(msg.chat.id, dominant+"\n این پیام در غالب داکیومنت ارسال خواهد شد", { reply_to_message_id: msg.message_id }); }
+      const prt = msg.text.split(" ")[1];
+      if (user.user.port.carry.includes(prt)){
+        const dominant = getPackFileId(user.user.port[prt].dominant);
+        if (user.user.language === "eng"){
+          bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+        } else { bot.sendMessage(msg.chat.id, dominant+"\n این پیام در غالب داکیومنت ارسال خواهد شد", { reply_to_message_id: msg.message_id }); }
+      } else {
+        bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id});
+      }
     } else {
-      bot.sendMessage(msg.chat.id, makeFont("please buy port first from admins ! 🌚"), {reply_to_message_id: msg.message_id});
+      bot.sendMessage(msg.chat.id, makeFont("invalid port detected 👀"), { reply_to_message_id: msg.message_id })
     }
   } else if (msg.text.startsWith("/start") && !admins.includes(msg.from.id)){
     const user = jsc.isExists(msg.from.id);
