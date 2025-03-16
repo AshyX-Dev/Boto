@@ -135,7 +135,7 @@ class JsonCore{
     const users = this.getUsers();
     const hashed_port = createHashPort();
     users[user.index]["has_port"] = true;
-    users[user.index]["dominant"] = dominant;
+    users[user.index]["port"]["dominant"] = dominant;
     users[user.index]["port"]["carry"].push(hashed_port);
     users[user.index]["port"][hashed_port] = {};
     users[user.index]["port"][hashed_port] = {
