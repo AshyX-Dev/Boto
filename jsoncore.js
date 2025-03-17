@@ -232,7 +232,7 @@ class JsonCore{
     const user = this.isExists(userid);
     if (user.status == "OK"){
       const users = this.getUsers();
-      if (user.user.port.carry.includes(port)){
+      if (user.user.port.carry.includes(from_port)){
         if (user.user.port[from_port].subs.includes(sub)){
           const subs = user.user.port[from_port].subs;
           const sub_index = subs.indexOf(sub);
