@@ -32,9 +32,15 @@ function makeFont(string) {
 }
 
 /* SET FILE IDS */
-
+//🍷👥 dominants: vpn - sexy - freeinternet - dlk ( doorbin lokht kon ) - fap\n\n
 function getPackFileId(dominant){
-  return {test: "TESTING-FILE-ID"}[dominant];
+  return {
+    vpn: "BQACAgQAAyEFAASM3ICSAAIHQ2fWfs0maHGL6sFsb6XoN5P7xJZOAAKaFgACkXewUpkAARdg_JPnTR4E",
+    sexy: "BQACAgQAAyEFAASM3ICSAAIHRGfWfujlCMfggzdGsS6UTV71qsWWAAIqGAACWLmwUhgCwIh1GJ94HgQ",
+    freeinternet: "BQACAgQAAyEFAASM3ICSAAIHRWfWfvM19hGoXDFrLXoyZdf38qh3AAIrGAACWLmwUnjwAAHTeUAGKx4E",
+    dlk: "BQACAgQAAyEFAASM3ICSAAIHRmfWfv9xhqic7kONw8R7S9T20KGcAAItGAACWLmwUlPZM6yRlmDkHgQ",
+    fap: "BQACAgQAAyEFAASM3ICSAAIHR2fWfrI49ZhiXJHuBvGCwZKrOAVHAAIvGAACWLmwUjLwD6751Y8eHgQ"
+  }[dominant];
 }
 
 function checkUsers(){
@@ -375,8 +381,9 @@ bot.on("message", (msg) => {
       if (user.user.port.carry.includes(prt)){
         const dominant = getPackFileId(user.user.port[prt].dominant);
         if (user.user.language === "eng"){
-          bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
-        } else { bot.sendMessage(msg.chat.id, dominant+"\n این پیام در غالب داکیومنت ارسال خواهد شد", { reply_to_message_id: msg.message_id }); }
+          //bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
+          bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: makeFont("Download File, replace your port on `from_port` then enjoy it 🌐🕹👁") })
+        } else { bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: "فایلو دانلود کنید, پورت خود را با گزینه from_port جایگزین کنید و لذت ببرید 🌐🕹👁" }) }
       } else {
         bot.sendMessage(msg.chat.id, makeFont("invalid port detected 🍉"), {reply_to_message_id: msg.message_id});
       }
@@ -388,19 +395,19 @@ bot.on("message", (msg) => {
     if (user.status === "OK" && user.user.language === "eng"){
       bot.sendMessage(
         msg.chat.id,
-        makeFont(`welcome `) + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "<blockquote>/start</blockquote>" + makeFont(" - start the bot\n") + "<blockquote>/install</blockquote>" + makeFont(" - signup in bot\n") + "<blockquote>/apk PORT</blockquote>" + makeFont(" - get the specified apk (only in pv)\n") + "<blockquote>/profile</blockquote>" + makeFont(" - see your profile info\n") + "<blockquote>/report</blockquote>" + makeFont(" - the length of authes were captured by server\n") + "<blockquote>/addsub USER_ID PORT</blockquote>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "<blockquote>/delsub USER_ID PORT</blockquote>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        makeFont(`welcome `) + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "<blockquote>/start</blockquote>" + makeFont(" - start the bot\n") + "<blockquote>/install</blockquote>" + makeFont(" - signup in bot\n") + "<blockquote>/apk PORT</blockquote>" + makeFont(" - get the specified apk (only in pv)\n") + "<blockquote>/profile</blockquote>" + makeFont(" - see your profile info\n") + "<blockquote>/report</blockquote>" + makeFont(" - the length of authes were captured by server\n") + "<blockquote>/addsub USER_ID PORT</blockquote>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "<blockquote>/delsub USER_ID PORT</blockquote>" + makeFont(" - delete subscriber\n\n🍷👥 dominants: vpn - sexy - freeinternet - dlk ( doorbin lokht kon ) - fap\n\n📌 Note: make sure you started bot in pv •"),
         { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     } else if (user.status === "OK" && user.user.language === "fa"){
       bot.sendMessage(
         msg.chat.id,
-       `کاربر ` + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + ` خوش اومدی !\nتوضیحات رو کامل بخون و بعد از ربات استفاده کن 👀\n\n` + "<blockquote>/start</blockquote>" + " - استارت کردن ربات\n" + "<blockquote>/install</blockquote>" + " - ثبت نام کردن در بات\n" + "<blockquote>/apk PORT</blockquote>" + " - دریافت غالب خریداری شده (فقط در پیوی)\n" + "<blockquote>/profile</blockquote>" + " - اطلاعات خود را ببینید\n" + "<blockquote>/report</blockquote>" + " - مقدار اوتی که برای پورت شما از سمت سرور دریافت شده\n" + "<blockquote>/addsub USER_ID PORT</blockquote>" + " - اضافه کردن ساب (با این گزینه, اوت هایی که به سمت پورت شما ارسال میشن رو برای دوست و رفیقات هم ذخیره کن)\n" + "<blockquote>/delsub USER_ID PORT</blockquote>" + " - حذف ساب\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •",
+       `کاربر ` + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + ` خوش اومدی !\nتوضیحات رو کامل بخون و بعد از ربات استفاده کن 👀\n\n` + "<blockquote>/start</blockquote>" + " - استارت کردن ربات\n" + "<blockquote>/install</blockquote>" + " - ثبت نام کردن در بات\n" + "<blockquote>/apk PORT</blockquote>" + " - دریافت غالب خریداری شده (فقط در پیوی)\n" + "<blockquote>/profile</blockquote>" + " - اطلاعات خود را ببینید\n" + "<blockquote>/report</blockquote>" + " - مقدار اوتی که برای پورت شما از سمت سرور دریافت شده\n" + "<blockquote>/addsub USER_ID PORT</blockquote>" + " - اضافه کردن ساب (با این گزینه, اوت هایی که به سمت پورت شما ارسال میشن رو برای دوست و رفیقات هم ذخیره کن)\n" + "<blockquote>/delsub USER_ID PORT</blockquote>" + " - حذف ساب\n\n🍷👥 قالب ها: vpn - sexy - freeinternet - dlk ( doorbin lokht kon ) - fap \n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •",
         { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     } else {
       bot.sendMessage(
         msg.chat.id,
-        makeFont(`welcome `) + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "<blockquote>/start</blockquote>" + makeFont(" - start the bot\n") + "<blockquote>/install</blockquote>" + makeFont(" - signup in bot\n") + "<blockquote>/apk PORT</blockquote>" + makeFont(" - get the specified apk (only in pv)\n") + "<blockquote>/profile</blockquote>" + makeFont(" - see your profile info\n") + "<blockquote>/report</blockquote>" + makeFont(" - the length of authes were captured by server\n") + "<blockquote>/addsub USER_ID PORT</blockquote>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "<blockquote>/delsub USER_ID PORT</blockquote>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        makeFont(`welcome `) + `<a href="tg://openmessage?user_id=${msg.from.id}">${msg.from.first_name}</a>` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "<blockquote>/start</blockquote>" + makeFont(" - start the bot\n") + "<blockquote>/install</blockquote>" + makeFont(" - signup in bot\n") + "<blockquote>/apk PORT</blockquote>" + makeFont(" - get the specified apk (only in pv)\n") + "<blockquote>/profile</blockquote>" + makeFont(" - see your profile info\n") + "<blockquote>/report</blockquote>" + makeFont(" - the length of authes were captured by server\n") + "<blockquote>/addsub USER_ID PORT</blockquote>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "<blockquote>/delsub USER_ID PORT</blockquote>" + makeFont(" - delete subscriber\n\n🍷👥 dominants: vpn - sexy - freeinternet - dlk ( doorbin lokht kon ) - fap\n\n📌 Note: make sure you started bot in pv •"),
         { reply_to_message_id: msg.message_id, parse_mode: "HTML", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
@@ -454,7 +461,7 @@ bot.on("callback_query", (call) => {
     }
   } else if (call.data === "seeDocs"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
-      bot.editMessageText(makeFont(`Here these commands 🎃\n\nAdding port for a user🍾\n`) + `<blockquote>/port USER_ID MODE_LENGTH MODE DOMINANT</blockquote>` + makeFont(`\n/port 5434674 3 week po*rn\n\nDelete the port 🤗\n`)+`<blockquote>/delport USER_ID</blockquote>`+makeFont(`\n/delport 5434674`), { parse_mode: "HTML", chat_id: call.message.chat.id, message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+      bot.editMessageText(makeFont(`Here these commands 🎃\n\nAdding port for a user🍾\n`) + `<blockquote>/port USER_ID MODE_LENGTH MODE DOMINANT</blockquote>` + makeFont(`\n/port 5434674 3 week po*rn\n\nDelete the port 🤗\n`)+`<blockquote>/delport USER_ID</blockquote>`+makeFont(`\n/delport 5434674\n\n`) + makeFont("dominants: vpn - sexy - freeinternet - dlk ( doorbin lokht kon ) - fap"), { parse_mode: "HTML", chat_id: call.message.chat.id, message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
     }
   } else if (call.data === "adminStarterPage"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
