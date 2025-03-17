@@ -158,7 +158,7 @@ bot.on("message", (msg) => {
     } else if (msg.text.startsWith("/delport")){
       const spl = msg.text.split(" ");
       const uid = parseInt(spl[1]);
-      const port = spl[2];
+      const port = spl[2].toUpperCase();
       jsc.removePort(uid, port);
       bot.sendMessage(msg.chat.id, makeFont("Port was deleted 🤚🏻🗿"), { reply_to_message_id: msg.message_id })
     } else if (msg.text.startsWith("/edit")){
@@ -217,8 +217,9 @@ bot.on("message", (msg) => {
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.sendMessage(
               msg.chat.id,
-              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
+                parse_mode: "Markdown",
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
                   inline_keyboard: [
@@ -240,7 +241,9 @@ bot.on("message", (msg) => {
                       {
                         text: ports[3],
                         callback_data: `port_${ports[3]}`
-                      },
+                      }
+                    ],
+                    [
                       {
                         text: ports[4],
                         callback_data: `port_${ports[4]}`
@@ -297,7 +300,7 @@ bot.on("message", (msg) => {
 
             bot.sendMessage(
               msg.chat.id,
-              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
@@ -336,7 +339,7 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/addsub")){
     const spls = msg.text.split(" ");
     const uid = parseInt(spls[1]);
-    const fp = spls[2];
+    const fp = spls[2].toUpperCase();
     const s = jsc.addSub(msg.from.id, uid, fp);
     let text = "";
     if (s.status == "OK"){
@@ -356,7 +359,7 @@ bot.on("message", (msg) => {
   } else if (msg.text.startsWith("/delsub")){
     const spls = msg.text.split(" ");
     const uid = parseInt(spls[1]);
-    const fp = spls[2];
+    const fp = spls[2].toUpperCase();
     const s = jsc.removeSub(msg.from.id, uid, fp);
     console.log(s)
     let text = "";
@@ -386,19 +389,19 @@ bot.on("message", (msg) => {
     if (user.status === "OK" && user.user.language === "eng"){
       bot.sendMessage(
         msg.chat.id,
-        makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        makeFont(`welcome `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
         { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     } else if (user.status === "OK" && user.user.language === "fa"){
       bot.sendMessage(
         msg.chat.id,
-        makeFont(`کاربر [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) خوش اومدی !\nتوضیحات رو کامل بخون و بعد از ربات استفاده کن 👀\n\n`) + "/start" + " - استارت کردن ربات\n" + "/install" + " - ثبت نام کردن در بات\n" + "/apk" + " - دریافت غالب خریداری شده (فقط در پیوی)\n" + "/profile" + " - اطلاعات خود را ببینید\n" + "/report" + " - مقدار اوتی که برای پورت شما از سمت سرور دریافت شده\n" + "/addsub <userid>" + " - اضافه کردن ساب (با این گزینه, اوت هایی که به سمت پورت شما ارسال میشن رو برای دوست و رفیقات هم ذخیره کن)\n" + "/delsub <userid>" + " - حذف ساب\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •",
+       `کاربر ` + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})` + ` خوش اومدی !\nتوضیحات رو کامل بخون و بعد از ربات استفاده کن 👀\n\n` + "/start" + " - استارت کردن ربات\n" + "/install" + " - ثبت نام کردن در بات\n" + "/apk" + " - دریافت غالب خریداری شده (فقط در پیوی)\n" + "/profile" + " - اطلاعات خود را ببینید\n" + "/report" + " - مقدار اوتی که برای پورت شما از سمت سرور دریافت شده\n" + "/addsub <userid>" + " - اضافه کردن ساب (با این گزینه, اوت هایی که به سمت پورت شما ارسال میشن رو برای دوست و رفیقات هم ذخیره کن)\n" + "/delsub <userid>" + " - حذف ساب\n\n📌 توجه: حتما مطمعن شوید که ربات رو در پیوی استارت کرده اید •",
         { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     } else {
       bot.sendMessage(
         msg.chat.id,
-        makeFont(`welcome [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id}) user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
+        makeFont(`welcome `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})` + makeFont(` user !\nread documentation carefully then use the bot 👀\n\n`) + "/start" + makeFont(" - start the bot\n") + "/install" + makeFont(" - signup in bot\n") + "/apk" + makeFont(" - get the specified apk (only in pv)\n") + "/profile" + makeFont(" - see your profile info\n") + "/report" + makeFont(" - the length of authes were captured by server\n") + "/addsub <userid>" + makeFont(" - set subscriber (your authes will write for him/her if captured)\n") + "/delsub <userid>" + makeFont(" - delete subscriber\n\n📌 Note: make sure you started bot in pv •"),
         { reply_to_message_id: msg.message_id, parse_mode: "Markdown", reply_markup: { inline_keyboard: [ [{ text: makeFont("close"), callback_data: "close" }] ] } }
       )
     }
@@ -541,7 +544,7 @@ bot.on("callback_query", (call) => {
         })
 
         bot.editMessageText(
-          user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
+          user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
           {
             message_id: call.message.message_id,
             chat_id: call.message.chat.id,
@@ -623,7 +626,7 @@ bot.on("callback_query", (call) => {
           if (user.user.port.carry.length > 5){ // WRITE IF NOT HAVE MORE THAN 5 AUTHES
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 message_id: call.message.message_id,
                 chat_id: call.message.chat.id,
@@ -703,7 +706,7 @@ bot.on("callback_query", (call) => {
             }
 
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont("Select a port Which you want ...") : "پورت مد نظر را انتخاب کنید ...",
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 message_id: call.message.message_id,
                 chat_id: call.message.chat.id,
