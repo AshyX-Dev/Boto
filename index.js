@@ -428,6 +428,24 @@ bot.on("message", (msg) => {
         { reply_to_message_id: msg.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("english"), callback_data: "eng_lang" }, { text: "فارسی", callback_data: "fa_lang" }] ] } }
       )
     }
+  } else if (msg.text.startsWith("/info")){
+    bot.sendMessage(
+      msg.chat.id,
+      makeFont(`🎛 UID: ${msg.from.id}\n🍧 Name: ${msg.from.first_name}`),
+      {
+        reply_to_message_id: msg.message_id,
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: makeFont("close"),
+                callback_data: "close"
+              }
+            ]
+          ]
+        }
+      }
+    )
   }
 
 })
