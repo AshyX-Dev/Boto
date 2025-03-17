@@ -139,7 +139,8 @@ class JsonCore{
       mode: mode,
       end: new Date().getTime() + seconds,
       hash: hashed_port,
-      dominant: dominant
+      dominant: dominant,
+      subs: []
     };
 
     fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
