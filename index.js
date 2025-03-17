@@ -302,6 +302,7 @@ bot.on("message", (msg) => {
               msg.chat.id,
               user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
+                parse_mode: "Markdown",
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
                   inline_keyboard: lists
@@ -546,6 +547,7 @@ bot.on("callback_query", (call) => {
         bot.editMessageText(
           user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
           {
+            parse_mode: "Markdown",
             message_id: call.message.message_id,
             chat_id: call.message.chat.id,
             reply_markup: {
@@ -628,6 +630,7 @@ bot.on("callback_query", (call) => {
             bot.editMessageText(
               user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
+                parse_mode: "Markdown",
                 message_id: call.message.message_id,
                 chat_id: call.message.chat.id,
                 reply_markup: {
@@ -708,6 +711,7 @@ bot.on("callback_query", (call) => {
             bot.editMessageText(
               user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
+                parse_mode: "Markdown",
                 message_id: call.message.message_id,
                 chat_id: call.message.chat.id,
                 reply_markup: {
