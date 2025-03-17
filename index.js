@@ -37,8 +37,6 @@ function getPackFileId(dominant){
   return {test: "TESTING-FILE-ID"}[dominant];
 }
 
-// REWRITE IT
-
 function checkUsers(){
   const now = new Date().getTime();
   const users = jsc.getUsers();
@@ -545,7 +543,7 @@ bot.on("callback_query", (call) => {
         })
 
         bot.editMessageText(
-          user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+          user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
           {
             parse_mode: "Markdown",
             message_id: call.message.message_id,
@@ -625,10 +623,10 @@ bot.on("callback_query", (call) => {
     const user = jsc.isExists(call.from.id);
       if (user.status === "OK"){
         if (jsc.hasPort(call.from.id)){
-          if (user.user.port.carry.length > 5){ // WRITE IF NOT HAVE MORE THAN 5 AUTHES
+          if (user.user.port.carry.length > 5){
             const ports = getGroupsOfFive(user.user.port.carry)[0];
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 message_id: call.message.message_id,
@@ -709,7 +707,7 @@ bot.on("callback_query", (call) => {
             }
 
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 message_id: call.message.message_id,
