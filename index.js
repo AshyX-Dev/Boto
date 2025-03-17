@@ -454,7 +454,7 @@ bot.on("callback_query", (call) => {
     }
   } else if (call.data === "seeDocs"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
-      bot.editMessageText(makeFont(`Here these commands 🎃\n\nAdding port for a user🍾\n<blockquote>/port USER_ID MODE_LENGTH MODE DOMINANT</blockquote>\n/port 5434674 3 week po*rn\n\nDelete the port 🤗\n<blockquote>/delport USER_ID</blockquote>\n/delport 5434674`), { parse_mode: "HTML", chat_id: call.message.chat.id, message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
+      bot.editMessageText(makeFont(`Here these commands 🎃\n\nAdding port for a user🍾\n`) + `<blockquote>/port USER_ID MODE_LENGTH MODE DOMINANT</blockquote>` + makeFont(`\n/port 5434674 3 week po*rn\n\nDelete the port 🤗\n`)+`<blockquote>/delport USER_ID</blockquote>`+makeFont(`\n/delport 5434674`), { parse_mode: "HTML", chat_id: call.message.chat.id, message_id: call.message.message_id, reply_markup: { inline_keyboard: [ [{ text: makeFont("back 🔙"), callback_data: "adminStarterPage" }], [{ text: makeFont("close"), callback_data: "close" }] ] } })
     }
   } else if (call.data === "adminStarterPage"){
     if (admins.includes(call.from.id) && call.from.id == call.message.reply_to_message.from.id){
