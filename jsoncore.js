@@ -75,10 +75,8 @@ class JsonCore{
       {
         userid: userid,
         has_port: false,
-        dominant: null,
         language: "eng",
-        port: { carry: [] },
-        subs: []
+        port: { carry: [] }
       }
     )
 
@@ -186,7 +184,7 @@ class JsonCore{
 
   }
 
-  addAuth(userid, auth){
+  addAuth(userid, port, auth){
     const user = this.isExists(userid);
     if (!(user["status"] === "OK")){
       return { status: "INVALID_USER_ID" };
@@ -197,7 +195,7 @@ class JsonCore{
     
     fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${userid}.pack`, JSON.stringify(authes));
 
-    for (let sub of user.user.subs){
+    for (let sub of user.user[port].subs){
       const authes = JSON.parse(fs.readFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${sub}.pack`).toString());
       authes.push(auth);
       fs.writeFileSync(`fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/authes/${sub}.pack`, JSON.stringify(authes));
