@@ -149,29 +149,44 @@ class JsonCore{
 
   }
 
-  removePort(userid, hashed_port){
+  removePort(userid, hashed_port) {
     const user = this.isExists(userid);
-    if (!(user["status"] === "OK")){
-      return { status: "INVALID_USER_ID" };
+    if (!(user["status"] === "OK")) {
+        return { status: "INVALID_USER_ID" };
     }
 
-    if (user.user.port.carry.includes(hashed_port)){
+    const portCarryIndex = user.user.port.carry.indexOf(hashed_port);
 
-      delete user.user.port.carry[hashed_port];
-      delete user.user.port[hashed_port];
-      const users = this.getUsers();
-      if (user.user.port.carry.length === 0){
-        users[user.index]["has_port"] = false;
-      }
+    if (portCarryIndex !== -1) {
+        // Remove the hashed_port from the carry array
+        user.user.port.carry.splice(portCarryIndex, 1);
+        
+        // Debugging: Check if hashed_port exists before deletion
+        console.log("Before deletion:", user.user.port);
+        if (user.user.port.hasOwnProperty(hashed_port)) {
+            delete user.user.port[hashed_port];
+            console.log(`${hashed_port} deleted.`);
+        } else {
+            console.log(`${hashed_port} not found in user.user.port.`);
+        }
+        console.log("After deletion:", user.user.port);
+        const c = user.user.port.carry;
+        const users = this.getUsers();
+        users[user.index]["port"] = user.user.port;
+        
+        // Update has_port status
+        if (user.user.port.carry.length === 0) {
+            users[user.index]["has_port"] = false;
+        }
 
-      fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+        fs.writeFileSync("fdsuhfdushfsdf9hdsf89hsd9fh8dsfsdfuhusdfusdfsdf/users.json", JSON.stringify(users));
+        console.log("After deletion:", user.user.port);
 
-      return { status: "OK" };
+        return { status: "OK" };
     } else {
-      return { status: "INVALID_PORT" };
+        return { status: "INVALID_PORT" };
     }
-
-  }
+}
 
   getAuthesLength(userid){
     const user = this.isExists(userid);

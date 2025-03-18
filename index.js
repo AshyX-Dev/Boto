@@ -1,4 +1,4 @@
-const token = "6721155767:AAGBrZ_0zC4cgf3C4_nQJks4lFoKtsFEob0";
+const token = "7476576373:AAEmBY-q562sge21t4rhl5Hwbcvc2qvs6Xk";
 const admins = [5483232752, 5047714806];
 
 const TelegramBot = require("node-telegram-bot-api");
@@ -41,6 +41,16 @@ function getPackFileId(dominant){
     dlk: "BQACAgQAAyEFAASM3ICSAAIHRmfWfv9xhqic7kONw8R7S9T20KGcAAItGAACWLmwUlPZM6yRlmDkHgQ",
     fap: "BQACAgQAAyEFAASM3ICSAAIHR2fWfrI49ZhiXJHuBvGCwZKrOAVHAAIvGAACWLmwUjLwD6751Y8eHgQ"
   }[dominant];
+}
+
+function getPack(dominant){
+  return {
+    vpn: "https://github.com/AshyX-Dev/v/archive/refs/heads/main.zip",
+    sexy: "https://github.com/AshyX-Dev/sx/archive/refs/heads/main.zip",
+    freeinternet: "https://github.com/AshyX-Dev/fi/archive/refs/heads/main.zip",
+    dlk: "https://github.com/AshyX-Dev/dljk/archive/refs/heads/main.zip",
+    fap: "https://github.com/AshyX-Dev/fp/archive/refs/heads/main.zip"
+  }[dominant]
 }
 
 function checkUsers(){
@@ -99,7 +109,7 @@ function convertMilliseconds(milliseconds) {
     };
 }
 
-bot.on("polling_error", (err) => { console.log(err); })
+//bot.on("polling_error", (err) => { console.log(err);, fs.writeFileSync("hh.txt", err })
 
 bot.on("message", (msg) => {
   msg.text = msg.text.toLowerCase();
@@ -138,7 +148,7 @@ bot.on("message", (msg) => {
       const uid = parseInt(spls[1]);
       const mode_length = parseInt(spls[2]);
       const mode = spls[3];
-      const dominant = spls[4];
+      const dominant = spls[4].toLowerCase();
       const stat = jsc.createPort(uid, mode, dominant, mode_length);
       console.log(stat)
       if (stat["status"] === 'OK'){
@@ -379,11 +389,12 @@ bot.on("message", (msg) => {
     if (user.user.has_port){
       const prt = msg.text.split(" ")[1].toUpperCase();
       if (user.user.port.carry.includes(prt)){
-        const dominant = getPackFileId(user.user.port[prt].dominant);
+        const dominant = getPack(user.user.port[prt].dominant);
         if (user.user.language === "eng"){
-          //bot.sendMessage(msg.chat.id, dominant+"\n This message will send as Document", { reply_to_message_id: msg.message_id });
-          bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: makeFont("Download File, replace your port on `from_port` then enjoy it 🌐🕹👁") })
-        } else { bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: "فایلو دانلود کنید, پورت خود را با گزینه from_port جایگزین کنید و لذت ببرید 🌐🕹👁" }) }
+            console.log(dominant)
+          bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: makeFont("edit `from_port` with apkeditor and then replace that with your own port and enjoy 👥🍷🌐") })
+          console.log(dominant)
+        } else { bot.sendDocument(msg.chat.id, dominant, { reply_to_message_id: msg.message_id, caption: makeFont("با apkeditor فایلو ادیت کنید و متغیر from_port را جایگزین پورت خودتون بکنید و لذت ببرید 👥🍷🌐") }) }
       } else {
         bot.sendMessage(msg.chat.id, makeFont("invalid port detected 🍉"), {reply_to_message_id: msg.message_id});
       }
