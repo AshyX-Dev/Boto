@@ -109,7 +109,7 @@ function convertMilliseconds(milliseconds) {
     };
 }
 
-// bot.on("polling_error", (err) => { console.log(err); )
+bot.on("polling_error", (err) => { console.log(err); } )
 
 bot.on("message", (msg) => {
   msg.text = msg.text.toLowerCase();
@@ -233,7 +233,7 @@ bot.on("message", (msg) => {
             const ports = aports[0];
             bot.sendMessage(
               msg.chat.id,
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page 1/{aports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه 1/{aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page 1/`) + `${aports.length}\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه 1/${aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 reply_to_message_id: msg.message_id,
@@ -581,7 +581,7 @@ bot.on("callback_query", (call) => {
         })
 
         bot.editMessageText(
-          user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page {pageind}/{allports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه {pageind}/{allports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+          user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n`+ makeFont(`📃 | Page `) + `${pageind+1}/${allports.length}\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n📃 | صفحه ${pageind+1}/${allports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
           {
             parse_mode: "Markdown",
             message_id: call.message.message_id,
@@ -658,6 +658,7 @@ bot.on("callback_query", (call) => {
       }
     }
   } else if (call.data === "profilePage"){
+    if (call.from.id == call.message.reply_to_message.from.id){
     const user = jsc.isExists(call.from.id);
       if (user.status === "OK"){
         if (jsc.hasPort(call.from.id)){
@@ -665,7 +666,7 @@ bot.on("callback_query", (call) => {
             const aports = getGroupsOfFive(user.user.port.carry);
             const ports = aports[0];
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page 1/{aports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه 1/{aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n`+ makeFont(`📃 | Page 1/`) + `${aports.length}\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n📃 | صفحه 1/${aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 message_id: call.message.message_id,
@@ -690,7 +691,9 @@ bot.on("callback_query", (call) => {
                       {
                         text: ports[3],
                         callback_data: `port_${ports[3]}`
-                      },
+                      }
+                    ],
+                    [
                       {
                         text: ports[4],
                         callback_data: `port_${ports[4]}`
@@ -777,6 +780,7 @@ bot.on("callback_query", (call) => {
           )
         }
       }
+    }
   }
 })
 
