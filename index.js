@@ -109,7 +109,7 @@ function convertMilliseconds(milliseconds) {
     };
 }
 
-//bot.on("polling_error", (err) => { console.log(err);, fs.writeFileSync("hh.txt", err })
+// bot.on("polling_error", (err) => { console.log(err); )
 
 bot.on("message", (msg) => {
   msg.text = msg.text.toLowerCase();
@@ -173,14 +173,15 @@ bot.on("message", (msg) => {
       const spl = msg.text.split(" ");
       const uid = parseInt(spl[1]);
       const port = spl[2].toUpperCase();
-      jsc.removePort(uid, port);
+      const _ = jsc.removePort(uid, port);
+      console.log(_)
       bot.sendMessage(msg.chat.id, makeFont("Port was deleted 🤚🏻🗿"), { reply_to_message_id: msg.message_id })
     } else if (msg.text.startsWith("/edit")){
       const spls = msg.text.split(" ");
       const uid = parseInt(spls[1]);
       const ints = parseInt(spls[2]);
       const mode = spls[3];
-      const prt = spls[4]
+      const prt = spls[4].toUpperCase()
       const user = jsc.isExists(uid);
       const users = jsc.getUsers();
       if (user["status"] == "OK"){
@@ -228,10 +229,11 @@ bot.on("message", (msg) => {
       if (user.status === "OK"){
         if (jsc.hasPort(msg.from.id) === true){
           if (user.user.port.carry.length > 5){
-            const ports = getGroupsOfFive(user.user.port.carry)[0];
+            const aports = getGroupsOfFive(user.user.port.carry);
+            const ports = aports[0];
             bot.sendMessage(
               msg.chat.id,
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page 1/{aports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه 1/{aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 reply_to_message_id: msg.message_id,
@@ -579,7 +581,7 @@ bot.on("callback_query", (call) => {
         })
 
         bot.editMessageText(
-          user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+          user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page {pageind}/{allports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه {pageind}/{allports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
           {
             parse_mode: "Markdown",
             message_id: call.message.message_id,
@@ -660,9 +662,10 @@ bot.on("callback_query", (call) => {
       if (user.status === "OK"){
         if (jsc.hasPort(call.from.id)){
           if (user.user.port.carry.length > 5){
-            const ports = getGroupsOfFive(user.user.port.carry)[0];
+            const aports = getGroupsOfFive(user.user.port.carry);
+            const ports = aports[0];
             bot.editMessageText(
-              user.user.language === "eng" ? makeFont(`🛰 | UID: ${call.from.id}\n🍉 | PV: `) + `[${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n` + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${call.from.id}\n🍉 | پیوی: [${call.from.first_name}](tg://openmessage?user_id=${call.from.id})\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
+              user.user.language === "eng" ? makeFont(`🛰 | UID: ${msg.from.id}\n🍉 | PV: `) + `[${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n`+ makeFont(`📃 | Page 1/{aports.length}\n\n`) + makeFont("👥 | **__Select a Profile__**") : `🛰 | آیدی: ${msg.from.id}\n🍉 | پیوی: [${msg.from.first_name}](tg://openmessage?user_id=${msg.from.id})\n📃 | صفحه 1/{aports.length}\n\n👥 | **__یک پروفایل انتخاب کنید__**`,
               {
                 parse_mode: "Markdown",
                 message_id: call.message.message_id,
