@@ -123,11 +123,11 @@ class JsonCore{
     if (mode === "day"){
       seconds = 88400000 * mode_length;
     } else if (mode === "week"){
-      seconds = 604800000 * mode_length;
+      seconds = 606000000 * mode_length;
     } else if (mode === "month"){
-      seconds = 2600000000 * mode_length;
+      seconds = 2600960000 * mode_length;
     } else if (mode === "year"){
-      seconds = 31600000000 * mode_length;
+      seconds = 37763100000 * mode_length;
     }
 
     const users = this.getUsers();
